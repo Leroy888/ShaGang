@@ -1,0 +1,348 @@
+#include "Form.h"
+#include "ui_Form.h"
+#include <QDir>
+#include <QPluginLoader>
+#include <../MainApp/FuncInterface.h>
+#include "clsSettings.h"
+#include "../MainApp/model/Functions.h"
+#include <QLabel>
+#include <QTableWidgetItem>
+#include <QTreeWidgetItem>
+
+#include <QDebug>
+
+#define ROW 2
+#define COLUMN 2
+
+Form::Form(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::Form)
+{
+    ui->setupUi(this);
+
+    readIni();
+
+    // const QString fileName = QString("./funcPlugins/%1").arg(m_plugName);
+    if(!loadPlugin())
+    {
+        qDebug()<<"Load funcPlugin failed";
+    }
+    initUi();
+
+    initLogic();
+
+}
+
+Form::~Form()
+{
+    delete ui;
+    m_serialPort->close();
+    delete m_serialPort;
+}
+
+void Form::readIni()
+{
+    clsSettings *settings = new clsSettings("./cfg/Settings.ini");
+    QString strNode = QString("System/");
+    settings->readSetting(strNode + QString("funcPlug"), m_plugName);
+    settings->readSetting(strNode + QString("strCom"), m_strCom);
+    settings->readSetting(strNode + QString("strDev"), m_strDev);
+
+    strNode = QString("Device/");
+    int devNum;
+    settings->readSetting(strNode + "devNum", devNum);
+
+    for(int i=0; i<devNum; i++)
+    {
+        QString strDev;
+        settings->readSetting(strNode + QString("dev_%1").arg(QString::number(i + 1)), strDev);
+        QString strIp;
+        settings->readSetting(strNode + QString("ip_%1").arg(QString::number(i + 1)), strIp);
+
+        m_devIpMap.insert(strDev, strIp);
+    }
+
+    strNode = QString("Param/");
+    settings->readSetting(strNode + QString("paramList"), m_paramList);
+
+    delete settings;
+}
+
+bool Form::loadPlugin()
+{
+    const QString fileName = QString("./funcPlugins/%1").arg(m_plugName);
+
+    QPluginLoader loader(fileName);
+    QObject *plugin = loader.instance();
+    if(plugin)
+    {
+        m_pInterface = qobject_cast<FuncInterface*> (plugin);
+        if(m_pInterface)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Form::initUi()
+{
+    QMap<QString,QString>::iterator it = m_devIpMap.begin();
+    QString style = "border-radius: 1px;border:1px solid black;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
+
+    int num = 0;
+    for(it; it != m_devIpMap.end(); it++, num++)
+    {
+        QString strDev = it.key();
+        ClientForm *wdt = new ClientForm(it.value(), 8000, m_strDev);
+        wdt->setInfo(strDev);
+        wdt->setStyleSheet(style, false);
+
+        m_devFormMap.insert(strDev, wdt);
+        connect(wdt,SIGNAL(sig_clicked(QWidget*)),this,SLOT(slot_clicked(QWidget*)));
+
+        QLabel *label = new QLabel(strDev);
+        QPushButton *btn = new QPushButton(it.key());
+        btn->setIcon(QIcon(":/images/start.ico"));
+        btn->setCheckable(true);
+        connect(btn,&QPushButton::clicked,this,&Form::slot_onBtnClicked);
+        m_devBtnMap.insert(strDev, btn);
+
+        ui->gridLayout_btn->addWidget(label, num, 0);
+        ui->gridLayout_btn->addWidget(btn, num, 1);
+
+        ui->gridLayout_client->addWidget(wdt, num / 2, num % 2);
+    }
+
+    if(m_devIpMap.count() > 0)
+    {
+        QLabel *label = new QLabel(QString("全部"));
+        QPushButton *btn = new QPushButton(QString("全部"));
+        btn->setIcon(QIcon(":/images/start.ico"));
+        btn->setCheckable(true);
+        connect(btn,&QPushButton::clicked,this,&Form::slot_onBtnAll_clicked);
+        m_devBtnMap.insert(QString("all"), btn);
+        ui->gridLayout_btn->addWidget(label, m_devBtnMap.count() - 1, 0);
+        ui->gridLayout_btn->addWidget(btn, m_devBtnMap.count() - 1, 1);
+    }
+
+    initTreeWidget();
+
+    /*
+    ui->tableWidget->setRowCount(8 * 4);
+    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->verticalHeader()->setVisible(false);
+    QStringList headers;
+    headers<<QString("名称")<<QString("数据");
+    ui->tableWidget->setHorizontalHeaderLabels(headers);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget->setEditTriggers(QTableWidget::NoEditTriggers);
+
+    int rows = ui->tableWidget->rowCount();
+    int j = 0;
+    QStringList infoList;
+    infoList<<"雷达_1: "<<"雷达_2: "<<"雷达_3: "<<"雷达_4: ";
+    QStringList nameList;
+    nameList<<"体积"<<"面积"<<"长度"<<"宽度"<<"高度"<<"重量"<<"表面积";
+    for(int i=0; i<rows; i++)
+    {
+        int k = i % 8;
+        j = i / 8;
+        if(k == 0)
+        {
+            ui->tableWidget->setSpan(i, 0, 1, 2);
+            QTableWidgetItem *item = new QTableWidgetItem(infoList.at(j));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tableWidget->setItem(i, 0, item);
+        }
+        else
+        {
+            QString info = nameList.at(k - 1);
+
+            QTableWidgetItem *item = new QTableWidgetItem(info);
+            ui->tableWidget->setItem(i, 0, item);
+
+            QTableWidgetItem *item2 = new QTableWidgetItem;
+            ui->tableWidget->setItem(i, 1, item2);
+        }
+    }
+    */
+}
+
+void Form::initTreeWidget()
+{
+    QStringList headers;
+    headers<<QString("名称")<<QString("数据");
+    ui->treeWidget->setHeaderLabels(headers);
+    ui->treeWidget->setColumnCount(2);
+    QStringList keys = m_devIpMap.keys();
+    foreach (QString dev, keys)
+    {
+        QTreeWidgetItem *root = new QTreeWidgetItem(ui->treeWidget);
+        root->setText(0, dev);
+        root->setTextAlignment(0, Qt::AlignCenter);
+        root->setTextColor(0, Qt::blue);
+        root->setBackgroundColor(0, Qt::black);
+        root->setBackgroundColor(1, QColor(111, 156, 207));
+        root->setBackground(0, QBrush(Qt::black));
+
+        foreach (QString text, m_paramList)
+        {
+            QTreeWidgetItem *item1 = new QTreeWidgetItem(root);
+            item1->setText(0, text);
+        }
+    }
+
+    ui->treeWidget->expandAll();
+}
+
+void Form::updateUi()
+{
+    QMap<QString,ClientForm*>::iterator it;
+
+    int num = 0;
+    for(it = m_devFormMap.begin(); it != m_devFormMap.end(); it++)
+    {
+        num++;
+        if(m_curWidget == it.value())
+        {
+           QString style = "border-radius: 1px;border:3px solid red;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
+           it.value()->setStyleSheet(style, true);
+        }
+        else
+        {
+            QString style = "border-radius: 1px;border:1px solid black;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
+            it.value()->setStyleSheet(style, false);
+        }
+    }
+
+    qDebug()<<__FUNCTION__;
+}
+
+void Form::initLogic()
+{
+    m_serialPort = new SerialPort(m_strCom);
+    if(!m_serialPort->open())
+    {
+        qDebug()<<__FUNCTION__<<"open serial port failed";
+    }
+
+    m_device = DeviceFactory::getDevice(m_strDev);
+    if(m_device)
+    {
+        m_device->sendCmd(QString("Luck").toLatin1());
+    }
+}
+
+void Form::slot_onBtnClicked()
+{
+    QPushButton *btn = (QPushButton*) sender();
+    QString strDev = m_devBtnMap.key(btn);
+    ClientForm *form = m_devFormMap.value(strDev);
+    if(btn->isChecked())
+    {
+        btn->setIcon(QIcon(":/images/stop.ico"));
+        if(form)
+        {
+            form->start();
+        }
+    }
+    else
+    {
+        btn->setIcon(QIcon(":/images/start.ico"));
+        if(form)
+        {
+            form->stop();
+        }
+    }
+}
+
+void Form::slot_onBtnAll_clicked()
+{
+    QPushButton *btn = (QPushButton*) sender();
+    bool isChecked = btn->isChecked();
+    if(btn->isChecked())
+    {
+        btn->setIcon(QIcon(":/images/stop.ico"));
+    }
+    else
+    {
+        btn->setIcon(QIcon(":/images/start.ico"));
+    }
+
+    foreach (QPushButton* btns, m_devBtnMap)
+    {
+        if(btn != btns && btns->isChecked() != isChecked)
+        {
+            btns->click();
+        }
+    }
+}
+
+void Form::on_btnTurn_clicked()
+{
+    QString text = ui->lineEdit->text();
+    m_pInterface->setData(text);
+    QString tText = m_pInterface->getStrData();
+    ui->lineEdit_2->setText(tText);
+    m_pInterface->sendCmd(QString("Fuck").toLatin1(), QString("Luck").toLatin1());
+
+    Data data = m_pInterface->getData();
+
+    QStringList infoList;
+    infoList<<"雷达_1: "<<"雷达_2: "<<"雷达_3: "<<"雷达_4: ";
+    QStringList nameList;
+    nameList<<"体积"<<"面积"<<"长度"<<"宽度"<<"高度"<<"重量"<<"表面积";
+
+//    QTableWidgetItem *item = ui->tableWidget->item(0, 1);
+//    item->setText(QString::number(data.volume));
+//    item = ui->tableWidget->item(1, 1);
+//    item->setText(QString::number(data.area));
+//    item = ui->tableWidget->item(2, 1);
+//    item->setText(QString::number(data.length));
+
+//    item = ui->tableWidget->item(3, 1);
+//    item->setText(QString::number(data.width));
+//    item = ui->tableWidget->item(4, 1);
+//    item->setText(QString::number(data.height));
+//    item = ui->tableWidget->item(5, 1);
+//    item->setText(QString::number(data.weight));
+//    item = ui->tableWidget->item(6, 1);
+//    item->setText(QString::number(data.area));
+
+}
+
+void Form::on_cmbBox_turn_currentIndexChanged(int index)
+{
+    if(index == 0)
+    {
+        QMap<QString,ClientForm*>::iterator it = m_devFormMap.begin();
+        for(it; it!=m_devFormMap.end(); it++)
+        {
+            it.value()->setVisible(false);
+        }
+        m_curWidget->setVisible(true);
+    }
+    else
+    {
+        QMap<QString,ClientForm*>::iterator it = m_devFormMap.begin();
+        for(it; it!=m_devFormMap.end(); it++)
+        {
+            it.value()->setVisible(true);
+        }
+    }
+}
+
+
+void Form::slot_clicked(QWidget *wid)
+{
+    m_curWidget = wid;
+    updateUi();
+    qDebug()<<"Form slot_clicked";
+}
+
+void Form::on_btnSwitch_all_clicked()
+{
+
+}
