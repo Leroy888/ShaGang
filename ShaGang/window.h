@@ -67,6 +67,7 @@ public:
    // void setStyleSheet(const QString &style);
 
     void setInfo(const QString& info);
+    QString getInfo() const;
 
     void setStyleColor(const QString &styleSheet, bool value);
 private slots:
@@ -74,7 +75,7 @@ private slots:
     void rotateOneStep();
 
 signals:
-    void sig_clicked(QWidget*);
+    void sig_clicked(QString&);
 
 private:
     bool m_isCklicked;

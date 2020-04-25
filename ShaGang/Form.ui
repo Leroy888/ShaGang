@@ -143,6 +143,16 @@
         </spacer>
        </item>
        <item>
+        <widget class="QPushButton" name="btnShow">
+         <property name="text">
+          <string>显示选中</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="cmbBox_turn">
          <item>
           <property name="text">

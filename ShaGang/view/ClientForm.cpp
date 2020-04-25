@@ -8,7 +8,7 @@ ClientForm::ClientForm(const QString &ip, int port, QString &strDev, QWidget *pa
     ui->setupUi(this);
 
     m_socket = new QTcpSocket();
-    connect(ui->widget,SIGNAL(sig_clicked(QWidget*)),this,SLOT(slot_clicked()));
+    connect(ui->widget,SIGNAL(sig_clicked(QString&)),this,SLOT(slot_clicked(QString&)));
 
     m_devModel = DeviceFactory::getDevice(strDev);
 }
@@ -20,12 +20,18 @@ ClientForm::~ClientForm()
 
 void ClientForm::mouseReleaseEvent(QMouseEvent *)
 {
-    emit sig_clicked(this);
+    QString info = ui->widget->getInfo();
+    emit sig_clicked(this, info);
 }
 
 void ClientForm::setInfo(const QString info)
 {
     ui->widget->setInfo(info);
+}
+
+QString ClientForm::getInfo() const
+{
+    return ui->widget->getInfo();
 }
 
 void ClientForm::setStyleSheet(const QString &styleSheet, bool value)
@@ -62,8 +68,8 @@ void ClientForm::sendCmd(const QByteArray &cmd)
     m_devModel->sendCmd(cmd);
 }
 
-void ClientForm::slot_clicked()
+void ClientForm::slot_clicked(QString& info)
 {
-    emit sig_clicked(this);
+    emit sig_clicked(this, info);
     qDebug()<<"Client emit sig_clicked";
 }

@@ -80,7 +80,8 @@ Window::Window(QWidget *parent) : QWidget(parent)
 
 void Window::mousePressEvent(QMouseEvent *event)
 {
-    emit sig_clicked(this);
+    QString text = m_label->text();
+    emit sig_clicked(text);
   //  m_isCklicked = !m_isCklicked;
 //    QString style;
 //    if(m_isCklicked)
@@ -97,6 +98,11 @@ void Window::mousePressEvent(QMouseEvent *event)
 void Window::setInfo(const QString &info)
 {
     m_label->setText(info);
+}
+
+QString Window::getInfo() const
+{
+    return m_label->text();
 }
 
 void Window::setStyleColor(const QString &styleSheet, bool value)
@@ -116,7 +122,8 @@ void Window::setStyleColor(const QString &styleSheet, bool value)
 void Window::setCurrentGlWidget()
 {
     currentGlWidget = qobject_cast<GLWidget *>(sender());
-    emit sig_clicked(this);
+    QString text = m_label->text();
+    emit sig_clicked(text);
     qDebug()<<"Window emit sig_clicked";
 }
 

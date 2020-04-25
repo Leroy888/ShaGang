@@ -11,10 +11,13 @@ class DeviceModel : public QObject
 public:
     DeviceModel() {}
     virtual void setParam(const QString &ip, int port) = 0;
+//    virtual void initDevice(const QString &strCom) = 0;
+//    virtual void initDevice(const QString &ip, int port) = 0;
     virtual void start() = 0;
     virtual void stop() = 0;
     virtual void sendCmd(const QByteArray &cmd) = 0;
     virtual bool open() = 0;
+    virtual void close() = 0;
 
 signals:
     void sig_data(QByteArray *);

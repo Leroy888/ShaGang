@@ -13,6 +13,7 @@ public:
     virtual bool open() override;
     virtual void start() override;
     virtual void stop() override;
+    virtual void close() override;
 };
 
 #endif // LMS5XX_H

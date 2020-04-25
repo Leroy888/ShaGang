@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QTableWidgetItem>
 #include <QTreeWidgetItem>
+#include <QTreeWidgetItemIterator>
 
 #include <QDebug>
 
@@ -100,7 +101,7 @@ void Form::initUi()
         wdt->setStyleSheet(style, false);
 
         m_devFormMap.insert(strDev, wdt);
-        connect(wdt,SIGNAL(sig_clicked(QWidget*)),this,SLOT(slot_clicked(QWidget*)));
+        connect(wdt,SIGNAL(sig_clicked(QWidget*, QString&)),this,SLOT(slot_clicked(QWidget*, QString&)));
 
         QLabel *label = new QLabel(strDev);
         QPushButton *btn = new QPushButton(it.key());
@@ -227,12 +228,6 @@ void Form::initLogic()
     {
         qDebug()<<__FUNCTION__<<"open serial port failed";
     }
-
-    m_device = DeviceFactory::getDevice(m_strDev);
-    if(m_device)
-    {
-        m_device->sendCmd(QString("Luck").toLatin1());
-    }
 }
 
 void Form::slot_onBtnClicked()
@@ -335,9 +330,10 @@ void Form::on_cmbBox_turn_currentIndexChanged(int index)
 }
 
 
-void Form::slot_clicked(QWidget *wid)
+void Form::slot_clicked(QWidget *wid, QString& info)
 {
     m_curWidget = wid;
+    m_info = info;
     updateUi();
     qDebug()<<"Form slot_clicked";
 }
@@ -345,4 +341,42 @@ void Form::slot_clicked(QWidget *wid)
 void Form::on_btnSwitch_all_clicked()
 {
 
+}
+
+void Form::on_btnShow_clicked()
+{
+    if(ui->btnShow->isChecked())
+    {
+        ui->btnShow->setText(tr("显示全部"));
+        QTreeWidgetItemIterator it(ui->treeWidget);
+        while(*it)
+        {
+            if((*it)->text(0) != (m_info))
+            (*it)->setExpanded(false);
+            it++;
+        }
+
+        QMap<QString,ClientForm*>::iterator itt = m_devFormMap.begin();
+        for(itt; itt!=m_devFormMap.end(); itt++)
+        {
+            itt.value()->setVisible(false);
+        }
+        m_curWidget->setVisible(true);
+    }
+    else
+    {
+        ui->btnShow->setText(tr("显示选中"));
+        QTreeWidgetItemIterator it(ui->treeWidget);
+        while(*it)
+        {
+            (*it)->setExpanded(true);
+            it++;
+        }
+
+        QMap<QString,ClientForm*>::iterator itt = m_devFormMap.begin();
+        for(itt; itt!=m_devFormMap.end(); itt++)
+        {
+            itt.value()->setVisible(true);
+        }
+    }
 }

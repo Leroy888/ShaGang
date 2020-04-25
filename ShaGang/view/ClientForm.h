@@ -24,6 +24,7 @@ public:
     void mouseReleaseEvent(QMouseEvent*);
 
     void setInfo(const QString info);
+    QString getInfo() const;
     void setStyleSheet(const QString &styleSheet, bool value);
 
     void connectToHost();
@@ -33,10 +34,10 @@ public:
     void sendCmd(const QByteArray &cmd);
 
 signals:
-    void sig_clicked(QWidget*);
+    void sig_clicked(QWidget*, QString&);
 
 private slots:
-    void slot_clicked();
+    void slot_clicked(QString &info);
 private:
     Ui::ClientForm *ui;
 

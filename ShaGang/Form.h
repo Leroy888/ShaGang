@@ -6,8 +6,6 @@
 #include "model/SerialPort.h"
 #include "view/ClientForm.h"
 #include <QMap>
-#include "model/DeviceFactory.h"
-#include "model/DeviceModel.h"
 #include <QPushButton>
 #include <QObject>
 
@@ -30,15 +28,18 @@ private slots:
 
     void on_cmbBox_turn_currentIndexChanged(int index);
 
-    void slot_clicked(QWidget* wid);
+    void slot_clicked(QWidget* wid, QString &info);
 
     void on_btnSwitch_all_clicked();
 
     void slot_onBtnClicked();
     void slot_onBtnAll_clicked();
+    void on_btnShow_clicked();
+
 private:
     Ui::Form *ui;
     QWidget *m_curWidget;
+    QString m_info;
     SerialPort *m_serialPort;
     FuncInterface *m_pInterface; 
     QString m_plugName;
@@ -49,8 +50,6 @@ private:
     QMap<QString,QString> m_devIpMap;
     QMap<QString,ClientForm*> m_devFormMap;
     QMap<QString,QPushButton*> m_devBtnMap;
-
-    DeviceModel *m_device;
 
 
 private:

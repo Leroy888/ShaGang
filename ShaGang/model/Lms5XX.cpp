@@ -32,3 +32,8 @@ void Lms5XX::stop()
 {
     qDebug()<<"stop scan";
 }
+
+void Lms5XX::close()
+{
+
+}
