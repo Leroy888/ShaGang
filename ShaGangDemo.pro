@@ -5,4 +5,4 @@ SUBDIRS += \
     ShaGang \
     SmartCity \
     ShaGangPlugin \
-    Test
+    SteelDll

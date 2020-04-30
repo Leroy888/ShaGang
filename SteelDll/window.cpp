@@ -50,7 +50,7 @@
 
 #include <QtWidgets>
 
-#include "GLWidget.h"
+#include "include/GLWidget.h"
 #include "window.h"
 
 Window::Window(QWidget *parent) : QWidget(parent)

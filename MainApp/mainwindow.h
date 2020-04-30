@@ -18,6 +18,11 @@ public:
     ~MainWindow();
     
     void populateMenus(QObject *pluginInterface, UiInterface *i);
+
+protected:
+    void slot_action_clicked();
+private:
+    void readJson();
 private slots:
     void slt_WidgetActionTriggered();
 private:

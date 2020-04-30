@@ -10,7 +10,11 @@ TARGET = ShaGang
 TEMPLATE = lib
 DESTDIR = ../App/plugins
 
-INCLUDEPATH += ../MainApp
+INCLUDEPATH += ./headers \
+                ../MainApp
+
+
+LIBS += $$PWD/GLWidget11.dll
 
 DEFINES += CENTERWIDGETONE_LIBRARY
 
@@ -29,11 +33,13 @@ SOURCES += \
     Form.cpp \
     ShaGangInterface.cpp \
     clsSettings.cpp \
-    glwidget.cpp \
+    com/Command.cpp \
+    model/FileSaver.cpp \
     model/Lms5XX.cpp \
-    model/SerialPort.cpp \
+    model/SocketThread.cpp \
     model/TcpSocket.cpp \
     view/ClientForm.cpp \
+    view/ControlForm.cpp \
     window.cpp
 
 HEADERS +=\
@@ -41,13 +47,15 @@ HEADERS +=\
         ShaGangInterface.h \
         ShaGang_global.h \
         clsSettings.h \
-        glwidget.h \
+        com/Command.h \
         model/DeviceFactory.h \
         model/DeviceModel.h \
+        model/FileSaver.h \
         model/Lms5XX.h \
-        model/SerialPort.h \
+        model/SocketThread.h \
         model/TcpSocket.h \
         view/ClientForm.h \
+        view/ControlForm.h \
         window.h
     
 unix {
@@ -56,7 +64,8 @@ unix {
 }
 FORMS += \
     Form.ui \
-    view/ClientForm.ui
+    view/ClientForm.ui \
+    view/ControlForm.ui
 
 RESOURCES += \
     Res.qrc

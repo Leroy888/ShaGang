@@ -48,87 +48,39 @@
 **
 ****************************************************************************/
 
-#include <QtWidgets>
+#ifndef WINDOW_H
+#define WINDOW_H
 
-#include "GLWidget.h"
-#include "window.h"
+#include <QWidget>
+#include <QMouseEvent>
+#include <QLabel>
 
-Window::Window(QWidget *parent) : QWidget(parent)
+class GLWidget;
+
+class Window : public QWidget
 {
-    QGridLayout *mainLayout = new QGridLayout;
+    Q_OBJECT
 
-    currentGlWidget = new GLWidget;
-    connect(currentGlWidget, &GLWidget::clicked,
-                        this, &Window::setCurrentGlWidget);
+public:
+    Window(QWidget *parent = nullptr);
+    void mousePressEvent(QMouseEvent *event) override;
+   // void setStyleSheet(const QString &style);
 
-    mainLayout->setRowStretch(0, 0);
-    mainLayout->setRowStretch(1, 1);
-    mainLayout->setSpacing(0);
-    m_label = new QLabel();
-    m_label->setMinimumHeight(28);
-    mainLayout->addWidget(m_label, 0, 0);
-    mainLayout->addWidget(currentGlWidget, 1, 0);
-    setLayout(mainLayout);
+    void setInfo(const QString& info);
+    QString getInfo() const;
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Window::rotateOneStep);
-    timer->start(2);
+    void setStyleColor(const QString &styleSheet, bool value);
+private slots:
+    void setCurrentGlWidget();
+    void rotateOneStep();
 
-    setWindowTitle(tr("Textures"));
-    m_isCklicked = false;
-}
+signals:
+    void sig_clicked(QString&);
 
-void Window::mousePressEvent(QMouseEvent *event)
-{
-    QString text = m_label->text();
-    emit sig_clicked(text);
-  //  m_isCklicked = !m_isCklicked;
-//    QString style;
-//    if(m_isCklicked)
-//    {
-//        style = "border-radius: 1px;border:1px solid black;background:#ffc6ff; color: rgb(18, 18, 18);font-size: 25px;";
-//    }
-//    else
-//    {
-//        style = "border-radius: 1px;border:1px solid black;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
-//    }
-    //    this->setStyleSheet(style);
-}
+private:
+    bool m_isCklicked;
+    GLWidget *currentGlWidget;
+    QLabel *m_label;
+};
 
-void Window::setInfo(const QString &info)
-{
-    m_label->setText(info);
-}
-
-QString Window::getInfo() const
-{
-    return m_label->text();
-}
-
-void Window::setStyleColor(const QString &styleSheet, bool value)
-{
-    this->setStyleSheet(styleSheet);
-    if(value)
-    {
-        currentGlWidget->setClearColor(Qt::red);
-    }
-    else
-    {
-        currentGlWidget->setClearColor(Qt::black);
-    }
-
-}
-
-void Window::setCurrentGlWidget()
-{
-    currentGlWidget = qobject_cast<GLWidget *>(sender());
-    QString text = m_label->text();
-    emit sig_clicked(text);
-    qDebug()<<"Window emit sig_clicked";
-}
-
-void Window::rotateOneStep()
-{
-    if (currentGlWidget)
-        currentGlWidget->rotateBy(+2 * 16, +2 * 16, -1 * 16);
-}
+#endif

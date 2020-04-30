@@ -2,7 +2,6 @@
 #define FUNCINTERFACE_H
 
 #include <QObject>
-#include "model/Functions.h"
 
 struct Data
 {
