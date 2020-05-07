@@ -9,6 +9,7 @@
 #include <QTreeWidgetItem>
 #include <QTreeWidgetItemIterator>
 #include <QMessageBox>
+#include "model/SerialPort.h"
 
 
 #include <QDebug>
@@ -23,6 +24,7 @@ Form::Form(QWidget *parent) :
     ui->setupUi(this);
 
     readIni();
+    qDebug()<<"readIni";
 
     // const QString fileName = QString("./funcPlugins/%1").arg(m_plugName);
     if(!loadPlugin())
@@ -32,6 +34,7 @@ Form::Form(QWidget *parent) :
     initUi();
 
     initLogic();
+    qDebug()<<"initLogic";
     m_curWidget = nullptr;
 }
 
@@ -47,6 +50,7 @@ void Form::readIni()
     settings->readSetting(strNode + QString("funcPlug"), m_plugName);
     settings->readSetting(strNode + QString("strCom"), m_strCom);
     settings->readSetting(strNode + QString("strDev"), m_strDev);
+    settings->readSetting(strNode + QString("strPort"), m_strPort);
 
     strNode = QString("Device/");
     int devNum;
@@ -90,18 +94,23 @@ void Form::initUi()
 {
     QMap<QString,QString>::iterator it = m_devIpMap.begin();
     QString style = "border-radius: 1px;border:1px solid black;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
-
+    qDebug()<<"initUi";
     int num = 0;
     for(it; it != m_devIpMap.end(); it++, num++)
     {
         QString strDev = it.key();
-        ClientForm *wdt = new ClientForm(it.value(), 2111, m_strDev);
+        ClientForm *wdt = new ClientForm(it.value(), 2111, m_strCom, m_strDev);
         wdt->setInfo(strDev);
         wdt->setStyleSheet(style, false);
         wdt->connectToHost();
+        if(!wdt->initSerial())
+        {
+            QMessageBox::information(nullptr, tr("提示"), strDev + tr("连接PLC失败"), QMessageBox::Ok);
+        }
 
         m_devFormMap.insert(strDev, wdt);
-        connect(wdt,SIGNAL(sig_clicked(QWidget*, QString&)),this,SLOT(slot_clicked(QWidget*, QString&)));
+        //connect(wdt,SIGNAL(sig_clicked(QWidget*, QString&)),this,SLOT(slot_clicked(QWidget*, QString&)));
+        connect(wdt,&ClientForm::sig_doubleClicked,this,&Form::slot_doubleClicked);
 
         QLabel *label = new QLabel(strDev);
         QPushButton *btn = new QPushButton(it.key());
@@ -160,6 +169,7 @@ void Form::initTreeWidget()
     }
 
     ui->treeWidget->expandAll();
+    qDebug()<<"initTreeWidget";
 }
 
 void Form::updateUi()
@@ -316,6 +326,49 @@ void Form::slot_clicked(QWidget *wid, QString& info)
     m_info = info;
     updateUi();
     qDebug()<<"Form slot_clicked";
+}
+
+void Form::slot_doubleClicked(QWidget *wid, QString &info, bool value)
+{
+    qDebug()<<__FUNCTION__;
+    m_curWidget = wid;
+    m_info = info;
+    m_isClicked = value;
+
+    if(value)
+    {
+        ui->btnShow->setText(tr("显示全部"));
+        QTreeWidgetItemIterator it(ui->treeWidget);
+        while(*it)
+        {
+            if((*it)->text(0) != (m_info))
+                (*it)->setExpanded(false);
+            it++;
+        }
+
+        QMap<QString,ClientForm*>::iterator itt = m_devFormMap.begin();
+        for(itt; itt!=m_devFormMap.end(); itt++)
+        {
+            itt.value()->setVisible(false);
+        }
+        m_curWidget->setVisible(true);
+    }
+    else
+    {
+        ui->btnShow->setText(tr("显示选中"));
+        QTreeWidgetItemIterator it(ui->treeWidget);
+        while(*it)
+        {
+            (*it)->setExpanded(true);
+            it++;
+        }
+
+        QMap<QString,ClientForm*>::iterator itt = m_devFormMap.begin();
+        for(itt; itt!=m_devFormMap.end(); itt++)
+        {
+            itt.value()->setVisible(true);
+        }
+    }
 }
 
 void Form::on_btnSwitch_all_clicked()

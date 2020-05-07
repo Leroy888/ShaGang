@@ -14,7 +14,7 @@ INCLUDEPATH += ./headers \
                 ../MainApp
 
 
-LIBS += $$PWD/GLWidget11.dll
+LIBS += $$PWD/GLWidget.dll
 
 DEFINES += CENTERWIDGETONE_LIBRARY
 

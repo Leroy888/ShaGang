@@ -90,7 +90,6 @@ void TcpSocket::slot_reconnect()
     m_socket->connectToHost(m_ip, m_port);
 
     m_timer->start(3000);
-    qDebug()<<__FUNCTION__<<" start timer";
 }
 
 void TcpSocket::slot_connect()
@@ -98,7 +97,6 @@ void TcpSocket::slot_connect()
     if(m_timer->isActive())
     {
         m_timer->stop();
-        qDebug()<<__FUNCTION__<<" stop timer";
     }
 }
 

@@ -29,6 +29,7 @@ private slots:
     void on_cmbBox_turn_currentIndexChanged(int index);
 
     void slot_clicked(QWidget* wid, QString &info);
+    void slot_doubleClicked(QWidget* wid, QString &info, bool value);
 
     void on_btnSwitch_all_clicked();
 
@@ -54,6 +55,9 @@ private:
     QMap<QString,ClientForm*> m_devFormMap;
     QMap<QString,QPushButton*> m_devBtnMap;
     QMap<QString,ControlForm*> m_devCtrlMap;
+    QString m_strPort;
+
+    bool m_isClicked;
 
 
 private:

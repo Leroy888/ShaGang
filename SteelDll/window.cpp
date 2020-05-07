@@ -60,14 +60,19 @@ Window::Window(QWidget *parent) : QWidget(parent)
     currentGlWidget = new GLWidget;
     connect(currentGlWidget, &GLWidget::clicked,
                         this, &Window::setCurrentGlWidget);
+    connect(currentGlWidget, &GLWidget::sig_doubleClicked,this,&Window::slot_doubleClicked);
 
     mainLayout->setRowStretch(0, 0);
     mainLayout->setRowStretch(1, 1);
     mainLayout->setSpacing(0);
+    mainLayout->setVerticalSpacing(1);
+    mainLayout->setHorizontalSpacing(1);
+
     m_label = new QLabel();
     m_label->setMinimumHeight(28);
     mainLayout->addWidget(m_label, 0, 0);
     mainLayout->addWidget(currentGlWidget, 1, 0);
+
     setLayout(mainLayout);
 
     QTimer *timer = new QTimer(this);
@@ -93,6 +98,21 @@ void Window::mousePressEvent(QMouseEvent *event)
 //        style = "border-radius: 1px;border:1px solid black;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
 //    }
     //    this->setStyleSheet(style);
+}
+
+void Window::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_isCklicked = !m_isCklicked;
+    QString text = m_label->text();
+    emit sig_doubleClicked(text, m_isCklicked);
+}
+
+void Window::slot_doubleClicked()
+{
+    qDebug()<<"window "<<__FUNCTION__;
+    m_isCklicked = !m_isCklicked;
+    QString text = m_label->text();
+    emit sig_doubleClicked(text, m_isCklicked);
 }
 
 void Window::setInfo(const QString &info)

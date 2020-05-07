@@ -64,6 +64,7 @@ class Window : public QWidget
 public:
     Window(QWidget *parent = nullptr);
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
    // void setStyleSheet(const QString &style);
 
     void setInfo(const QString& info);
@@ -74,8 +75,10 @@ private slots:
     void setCurrentGlWidget();
     void rotateOneStep();
 
+    void slot_doubleClicked();
 signals:
     void sig_clicked(QString&);
+    void sig_doubleClicked(QString&, bool);
 
 private:
     bool m_isCklicked;

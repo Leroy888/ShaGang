@@ -4,7 +4,7 @@ CONFIG += plugin
 
 TARGET = $$qtLibraryTarget(Steel)
 
-QT += widgets network
+QT += widgets network serialport
 
 INCLUDEPATH += ../MainApp \
                 /include
@@ -29,6 +29,7 @@ HEADERS += \
     model/DeviceModel.h \
     model/FileSaver.h \
     model/Lms5XX.h \
+    model/SerialPort.h \
     model/SocketThread.h \
     model/TcpSocket.h \
     view/ClientForm.h \
@@ -42,6 +43,7 @@ SOURCES += \
     com/Command.cpp \
     model/FileSaver.cpp \
     model/Lms5XX.cpp \
+    model/SerialPort.cpp \
     model/SocketThread.cpp \
     model/TcpSocket.cpp \
     view/ClientForm.cpp \

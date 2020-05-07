@@ -8,6 +8,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include <QObject>
+#include "ImgWidget.h"
 
 
 class GLWIDGET_EXPORT GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -26,6 +27,7 @@ public:
 
 signals:
     void clicked();
+    void sig_doubleClicked();
 
 protected:
     void initializeGL() override;
@@ -34,6 +36,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
 
 private:
     void makeObject();
@@ -46,6 +50,8 @@ private:
     QOpenGLTexture *textures[6];
     QOpenGLShaderProgram *program;
     QOpenGLBuffer vbo;
+
+    QString m_text;
 };
 
 #endif // GLWIDGET_H

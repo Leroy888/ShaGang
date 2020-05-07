@@ -11,6 +11,8 @@
 #include <QJsonParseError>
 #include <QJsonArray>
 #include "../SteelDll/Form.h"
+#include "FormManager.h"
+#include "JsonReader.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -19,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->showMaximized();
-    readJson();
+  //  readJson();
     loadPlugins();
 }
 
@@ -57,6 +59,22 @@ int MainWindow::loadPlugins()
     return count;
 }
 
+bool MainWindow::loadPlugins(const QString &fileName)
+{
+    QPluginLoader loader(QString("./plugins/%1").arg(fileName));
+    QObject *plugin = loader.instance();
+    if(plugin)
+    {
+        auto centerInterface = qobject_cast<UiInterface*>(plugin);
+        if(centerInterface)
+        {
+
+        }
+    }
+
+    return false;
+}
+
 /**
  * @brief MainWindow::populateMenus 根据插件生成menu
  * @param pluginInterface 插件
@@ -64,71 +82,30 @@ int MainWindow::loadPlugins()
  */
 void MainWindow::populateMenus(QObject * pluginInterface, UiInterface *i )
 {
-//    static auto menu = menuBar()->addMenu("功能");
-//    auto act  = new QAction(i->name(),pluginInterface);
-//    //单击menu调用插件
-//    connect(act,&QAction::triggered,this,&MainWindow::slt_WidgetActionTriggered);
-//    menu->addAction(act);
+    static auto menu = menuBar()->addMenu("功能");
+    auto act  = new QAction(i->name(),pluginInterface);
+    //单击menu调用插件
+    connect(act,&QAction::triggered,this,&MainWindow::slt_WidgetActionTriggered);
+    menu->addAction(act);
 }
 
 void MainWindow::readJson()
 {
-    QFile file("./cfg/menu.txt");
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        qDebug()<<"read json file failed";
-        return;
-    }
-    QByteArray data = file.readAll();
-    qDebug()<<"json data "<<QString(data);
-    //QString strData = QString(data);
-    file.close();
+    JsonReader reader("./cfg/menu.txt");
+    reader.parseJson(m_menuMap, m_pluginMap);
 
-    QJsonParseError parseError;
-    QJsonDocument jDoc(QJsonDocument::fromJson(data, &parseError));
-
-    if(!(parseError.error == QJsonParseError::NoError))
+    QMap<QString,QStringList>::iterator it;
+    for(it=m_menuMap.begin(); it != m_menuMap.end(); it++)
     {
-        qDebug()<<"parse json error:"<<parseError.errorString();
-        return;
-    }
+        qDebug()<<it.key()<<" "<<it.value();
+        QMenu *menu = this->menuBar()->addMenu(it.key());
+        //QMenu *m = menu->addMenu("Test");
 
-    QJsonObject jObj = jDoc.object();
-    QStringList keys = jObj.keys();
-    qDebug()<<"root keys:"<<keys;
-    if(keys.contains("button"))
-    {
-        QJsonArray array = jObj.value("button").toArray();
-        for(int i=0; i<array.count(); i++)
+        for(int i=0; i<it.value().length(); i++)
         {
-            QJsonValue value = array.at(i);
-            if(value.isObject())
-            {
-                QJsonObject vObj = value.toObject();
-                QStringList menuKeys = vObj.keys();
-                foreach (QString mKey, menuKeys)
-                {
-                    QMenu *menu;
-                    if(vObj.value(mKey).isString())
-                    {
-                        menu = ui->menuBar->addMenu(vObj.value(mKey).toString());
-                    }
-                    else if(vObj.value(mKey).isArray())
-                    {
-                        QJsonArray actionArray = vObj.value(mKey).toArray();
-                        for(int j=0; j<actionArray.count(); j++)
-                        {
-                            if(actionArray.at(j).isObject())
-                            {
-                                QJsonObject actionObj = actionArray.at(j).toObject();
-                                QAction *action = new QAction(actionObj.value("name").toString());
-                                connect(action,&QAction::triggered,this,&MainWindow::slot_action_clicked);
-                                menu->addAction(action);
-                            }
-                        }
-                    }
-                }
-            }
+            QAction *action = new QAction(it.value().at(i));
+            connect(action,&QAction::triggered,this,&MainWindow::slot_action_clicked);
+            menu->addAction(action);
         }
     }
 }
@@ -138,9 +115,16 @@ void MainWindow::slot_action_clicked()
     QAction *action =  (QAction*)sender();
     QString text = action->text();
     qDebug()<<"Action text "<<text;
-    Form *form = new Form();
 
-    setCentralWidget(form);
+    QString fileName = m_pluginMap.value(text);
+    fileName = QString("ShaGang.dll");
+    QWidget *form = FormManager::getForm(fileName);
+
+    if(form)
+    {
+        setCentralWidget(form);
+    }
+  //  setCentralWidget(form);
 }
 
 /**
@@ -148,6 +132,7 @@ void MainWindow::slot_action_clicked()
  */
 void MainWindow::slt_WidgetActionTriggered()
 {
+   // QAction *action = new QAction()
     auto centerWidget = qobject_cast<UiInterface*>(sender()->parent())->centerWidget();
     setCentralWidget(centerWidget);
 }

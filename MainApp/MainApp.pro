@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,11 +32,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         Executor.cpp \
+        FormManager.cpp \
+        JsonReader.cpp \
         mainwindow.cpp
 
 HEADERS  += mainwindow.h \
     Executor.h \
+    FormManager.h \
     FuncInterface.h \
+    JsonReader.h \
     UiInterface.h
 
 FORMS    += mainwindow.ui

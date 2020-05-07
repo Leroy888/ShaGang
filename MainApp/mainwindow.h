@@ -4,6 +4,7 @@
 #include "UiInterface.h"
 
 #include <QMainWindow>
+#include <QMap>
 
 namespace Ui {
 class MainWindow;
@@ -21,14 +22,17 @@ public:
 
 protected:
     void slot_action_clicked();
+    bool loadPlugins(const QString &fileName);
 private:
     void readJson();
+    int loadPlugins();
 private slots:
     void slt_WidgetActionTriggered();
 private:
     Ui::MainWindow *ui;
     
-    int loadPlugins();
+    QMap<QString,QString> m_pluginMap;
+    QMap<QString,QStringList> m_menuMap;
 };
 
 #endif // MAINWINDOW_H
