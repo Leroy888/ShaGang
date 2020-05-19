@@ -11,5 +11,21 @@
         <file>images/stop.ico</file>
         <file>images/up.ico</file>
         <file>images/up16.png</file>
+        <file>images/align.png</file>
+        <file>images/array.png</file>
+        <file>images/gho.png</file>
+        <file>images/logo.png</file>
+        <file>images/protractor.png</file>
+        <file>images/tools.png</file>
+        <file>images/totation.png</file>
+        <file>images/zoom.png</file>
+        <file>images/entity.png</file>
+        <file>images/orthgraph.png</file>
+        <file>images/pointsCloud.png</file>
+        <file>images/render.png</file>
+        <file>images/shade.png</file>
+        <file>images/back.png</file>
+        <file>images/blackLine.png</file>
+        <file>images/next.png</file>
     </qresource>
 </RCC>

@@ -22,6 +22,8 @@ public:
     virtual void trig() = 0;
     virtual void autoTrig(bool value) = 0;
 
+    virtual bool initSerial() = 0;
+
 signals:
     void sig_data(QByteArray *);
 };

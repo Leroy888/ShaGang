@@ -10,9 +10,9 @@
 #include <QJsonObject>
 #include <QJsonParseError>
 #include <QJsonArray>
-#include "../SteelDll/Form.h"
 #include "FormManager.h"
 #include "JsonReader.h"
+#include "Command.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,9 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->showMaximized();
-  //  readJson();
+
+    //  readJson();
     loadPlugins();
+
+    m_curWidget = nullptr;
 }
 
 MainWindow::~MainWindow()
@@ -41,8 +43,10 @@ int MainWindow::loadPlugins()
     if(!pluginsDir.cd("plugins")) return -1;
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
+        if(!fileName.endsWith("dll"))
+            continue;
+
         QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
-        qDebug()<<"fileName "<<fileName;
         QObject *plugin = pluginLoader.instance();
         if(plugin)
         {
@@ -55,7 +59,8 @@ int MainWindow::loadPlugins()
                 populateMenus(plugin,centerInterface);
             }
         }
-    } 
+    }
+
     return count;
 }
 
@@ -87,52 +92,157 @@ void MainWindow::populateMenus(QObject * pluginInterface, UiInterface *i )
     //单击menu调用插件
     connect(act,&QAction::triggered,this,&MainWindow::slt_WidgetActionTriggered);
     menu->addAction(act);
+    m_plugAction = act;
+    menu->menuAction()->setVisible(false);
+}
+
+void MainWindow::loadModel()
+{
+    m_plugAction->trigger();    //做成配置
 }
 
 void MainWindow::readJson()
 {
-    JsonReader reader("./cfg/menu.txt");
-    reader.parseJson(m_menuMap, m_pluginMap);
+    //    JsonReader reader("./cfg/menu.txt");
+    //    reader.parseJson(m_menuMap, m_actionMap);
 
-    QMap<QString,QStringList>::iterator it;
-    for(it=m_menuMap.begin(); it != m_menuMap.end(); it++)
-    {
-        qDebug()<<it.key()<<" "<<it.value();
-        QMenu *menu = this->menuBar()->addMenu(it.key());
-        //QMenu *m = menu->addMenu("Test");
+    //    QMap<QString,QStringList>::iterator it;
+    //    for(it=m_actionMap.begin(); it != m_actionMap.end(); it++)
+    //    {
+    //        qDebug()<<it.key()<<" "<<it.value();
+    //        QMenu *menu = this->menuBar()->addMenu(it.key());
+    //        //QMenu *m = menu->addMenu("Test");
 
-        for(int i=0; i<it.value().length(); i++)
-        {
-            QAction *action = new QAction(it.value().at(i));
-            connect(action,&QAction::triggered,this,&MainWindow::slot_action_clicked);
-            menu->addAction(action);
-        }
-    }
+    //        for(int i=0; i<it.value().length(); i++)
+    //        {
+    //            QAction *action = new QAction(it.value().at(i));
+    //            connect(action,&QAction::triggered,this,&MainWindow::slot_action_clicked);
+    //            menu->addAction(action);
+    //        }
+    //    }
 }
 
 void MainWindow::slot_action_clicked()
 {
-    QAction *action =  (QAction*)sender();
+    QAction *action = (QAction*)sender();
     QString text = action->text();
-    qDebug()<<"Action text "<<text;
+    qDebug()<<__FUNCTION__<<text;
+    int cmd_id;
 
-    QString fileName = m_pluginMap.value(text);
-    fileName = QString("ShaGang.dll");
-    QWidget *form = FormManager::getForm(fileName);
-
-    if(form)
+    for(auto dataList : m_actionDataMap)
     {
-        setCentralWidget(form);
+        for (auto data : dataList) {
+            if(data->CN_menu == text){
+                cmd_id = data->cmd_id;
+                if(cmd_id == 1000)
+                {
+                    qApp->exit();
+                }
+                qobject_cast<UiInterface*>(sender()->parent())->executeCommand(cmd_id);
+                return;
+            }
+        }
     }
-  //  setCentralWidget(form);
 }
 
 /**
  * @brief MainWindow::slt_WidgetActionTriggered 单击menu调用插件
  */
 void MainWindow::slt_WidgetActionTriggered()
-{
-   // QAction *action = new QAction()
-    auto centerWidget = qobject_cast<UiInterface*>(sender()->parent())->centerWidget();
-    setCentralWidget(centerWidget);
+{ 
+    QMap<int, QStringList> toolBars;
+    auto widget = qobject_cast<UiInterface*>(sender()->parent())->centerWidget(m_menuDataList, m_childMenuDataMap, m_actionDataMap, toolBars);
+    if(widget == m_curWidget)
+    {
+        return;
+    }
+    qDebug()<<"load form dll";
+    m_curWidget = widget;
+    if(!widget)
+    {
+        qDebug()<<"load MainForm dll failed";
+    }
+
+    QToolBar* backToolBar = new QToolBar();
+    this->addToolBar(backToolBar);
+    m_backAction = ui->mainToolBar->addAction(QIcon(":/images/back.png"), "返回");
+    m_nextAction = ui->mainToolBar->addAction(QIcon(":/images/next.png"), "向前");
+
+    QList<QToolBar*> toolBarList;
+    for (int i=0; i<toolBars.count(); i++)
+    {
+        QToolBar* toolBar = new QToolBar();
+        toolBar->setFixedHeight(40);
+        this->addToolBar(toolBar);
+        toolBarList.append(toolBar);
+    }
+
+    for (auto data : m_menuDataList) {
+        QMenu *menu = this->menuBar()->addMenu(data->CN_menu);
+        QString cnText = data->CN_menu;
+        QList<MenuData*> childData = m_childMenuDataMap.value(cnText);
+
+        QStringList ctnList;
+        if(!childData.isEmpty())
+        {
+            for (auto cData : childData) {
+                QString childText = cData->CN_menu;
+
+                QList<MenuData*> actionDataList = m_actionDataMap.value(cData->CN_menu);
+                QMenu *childMenu = menu->addMenu(childText);
+                for (auto actData : actionDataList) {
+                    QAction *action = new QAction(actData->CN_menu, sender()->parent());
+                    action->setEnabled(actData->enabled);
+                    connect(action,&QAction::triggered,this,&MainWindow::slot_action_clicked);
+                    if(actData->shortcut != "")
+                    {
+                        action->setShortcut(actData->shortcut);
+                    }
+                    childMenu->addAction(action);
+                    ctnList.append(actData->CN_menu);
+                    //添加快捷菜单
+                    for (int var = 0; var < toolBars.count(); ++var) {
+                        QStringList barActions = toolBars.value(var+1);
+                        if(barActions.contains(actData->CN_menu))
+                        {
+                            QAction* scAction = toolBarList.at(var)->addAction(actData->CN_menu);
+                            scAction->setParent(sender()->parent());
+                            scAction->setIcon(QIcon(actData->icon));
+                            connect(scAction,&QAction::triggered,this,&MainWindow::slot_action_clicked);
+                        }
+                    }
+                }
+            }
+        }
+
+        QList<MenuData*> actionDataList = m_actionDataMap.value(cnText);
+        for (auto actData : actionDataList) {
+            if(!ctnList.contains(actData->CN_menu))
+            {
+                QAction *action = new QAction(actData->CN_menu, sender()->parent());
+                action->setEnabled(actData->enabled);
+                connect(action,&QAction::triggered,this,&MainWindow::slot_action_clicked);
+                if(actData->shortcut != "")
+                {
+                    action->setShortcut(actData->shortcut);
+                }
+                menu->addAction(action);
+                //添加快捷菜单
+                for (int var = 0; var < toolBars.count(); ++var) {
+                    QStringList barActions = toolBars.value(var+1);
+                    if(barActions.contains(actData->CN_menu))
+                    {
+                        QAction* scAction = toolBarList.at(var)->addAction(actData->CN_menu);
+                        scAction->setParent(sender()->parent());
+                        scAction->setIcon(QIcon(actData->icon));
+                        connect(scAction,&QAction::triggered,this,&MainWindow::slot_action_clicked);
+                    }
+                }
+            }
+        }
+    }
+
+    setCentralWidget(widget);
+
+    return;
 }

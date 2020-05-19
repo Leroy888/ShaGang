@@ -28,6 +28,7 @@ private:
     int m_num;
 
     QMap<int,QByteArray> m_dataMap;
+    uchar* m_fileMap;
 };
 
 #endif // FILESAVER_H

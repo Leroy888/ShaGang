@@ -3,9 +3,10 @@
 
 #include <QDebug>
 
-Lms5XX::Lms5XX(const QString &ip, const int port)
+Lms5XX::Lms5XX(const QString &ip, const int port, const QString &com)
 {
     m_socket = new TcpSocket(ip, port);
+    m_serial = new SerialPort(com);
 }
 
 void Lms5XX::setParam(const QString &ip, int port)
@@ -21,7 +22,10 @@ void Lms5XX::sendCmd(const QByteArray &cmd)
 void Lms5XX::start()
 {
     qDebug()<<"start scan "<<Command::start();
-    m_socket->sendCmd(Command::start());
+
+    m_serial->sendCmd(Command::start());
+
+    //m_socket->sendCmd(Command::start());
 }
 
 void Lms5XX::stop()
@@ -32,19 +36,19 @@ void Lms5XX::stop()
 
 void Lms5XX::connectToHost()
 {
+    qDebug()<<"Lms5XX"<<__FUNCTION__;
     m_socket->connectToHost();
-    qDebug()<<__FUNCTION__;
 }
 
 void Lms5XX::disconnectFromHost()
 {
     m_socket->disconnectFromHost();
-
 }
 
 void Lms5XX::status()
 {
-    m_socket->sendCmd(Command::status());
+   // m_socket->sendCmd(Command::status());
+    m_serial->sendCmd(Command::status());
     qDebug()<<__FUNCTION__<<Command::status();
 }
 
@@ -58,12 +62,26 @@ void Lms5XX::autoTrig(bool value)
 {
     if(value)
     {
+        QByteArray cmd = QString("<STX>sEN LMDscandata 1<ETX>").toLatin1();
+        QString("<STX>sRN LMDscandata<ETX>");
         m_socket->sendCmd(Command::autoTrig());
-        qDebug()<<__FUNCTION__<<"autoTrig"<<Command::autoTrig();
+        qDebug()<<__FUNCTION__<<cmd;
     }
     else
     {
         m_socket->sendCmd(Command::stopTrig());
         qDebug()<<__FUNCTION__<<"stopTrig"<<Command::stopTrig();
+    }
+}
+
+bool Lms5XX::initSerial()
+{
+    if(m_serial)
+    {
+        return m_serial->initSerial();
+    }
+    else
+    {
+        qDebug()<<"m_serial is null";
     }
 }

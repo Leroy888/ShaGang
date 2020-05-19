@@ -22,6 +22,7 @@ FileSaver::FileSaver(const QString &fileName, const QMap<int, QByteArray> &dataM
 
 void FileSaver::run()
 {
+
 //    mapFile();
 
 
@@ -75,8 +76,8 @@ void FileSaver::run()
     int freq = strFreq.toUInt(&ok, 16) / 100;
     os<<QString("扫描频率: ")<<freq<<endl;
     os<<QString("编码器状态: ")<<dataList.at(i++)<<" "<<dataList.at(i++)<<endl;
-  //  os<<QString("编码器位置: ")<<dataList.at(i++)<<endl;
-  //  os<<QString("编码器速度: ")<<dataList.at(i++)<<endl;
+  //  os<<QString("编码器位置: ")<<dataList.at(i++)<<endl;  19
+  //  os<<QString("编码器速度: ")<<dataList.at(i++)<<endl;  20
     os<<QString("输出通道: ")<<dataList.at(i++)<<endl;
     os<<QString("回波层序号: ")<<dataList.at(i++)<<endl;
     os<<QString("起始角度: ")<<dataList.at(i++)<<" "<<dataList.at(i++)<<" "<<dataList.at(i++)<<endl;
@@ -152,7 +153,7 @@ void FileSaver::save()
     strTmp = dataList.at(3);
     os<<"Dimension"<<endl;
     os<<3<<endl;
-
+    qDebug()<<"write header";
     bool ok;
     strTmp = dataList.at(25);
     ulong sum = strTmp.toULong(&ok, 16);
@@ -164,7 +165,7 @@ void FileSaver::save()
     {
         factors = 2;
     }
-
+    qDebug()<<"get factors";
     strTmp = dataList.at(23);
     int startAng = strTmp.toInt(&ok, 16) / 10000;
     qDebug()<<"start angle "<<startAng;
@@ -210,7 +211,6 @@ void FileSaver::saveFile()
     }
 
     QByteArray data = objInputFile.readAll();
-    //data.toStdString().c_str()
 
     QFile objOutputFile("./test2.txt");
     if (!objOutputFile.open(QIODevice::Unbuffered | QIODevice::ReadWrite | QIODevice::Truncate))
@@ -259,6 +259,8 @@ void FileSaver::mapFile()
     QList<int> keys = m_dataMap.keys();
     if(keys.length() == 0)
         return;
+    file.resize(1024*1024*15);
+
     QByteArray tmpData = m_dataMap.value(keys.at(0));
     QStringList dataList = QString(tmpData).split(" ");
     QString strTmp = dataList.at(2);
@@ -274,6 +276,19 @@ void FileSaver::mapFile()
     strFile = strFile + ("Vertices\n");
     strFile = strFile + (QString::number(sum*(keys.length()))) + ("\n");
 
+    qDebug()<<"file size "<<file.size();
+    uchar *pMap = file.map(0, file.size());
+    int size = strFile.toLatin1().size();
+    if(pMap)
+    {
+        memcpy(pMap, strFile.toStdString().data(), size);
+    }
+    else
+    {
+        qDebug()<<"file map failed";
+        return;
+    }
+
     int factors = 1;
     if(dataList.at(21) == QString("40000000"))
     {
@@ -287,18 +302,17 @@ void FileSaver::mapFile()
     strTmp = dataList.at(24);
     int ang = strTmp.toInt(&ok, 16);
     double angStep = ang / 10000.0;
-    qDebug()<<"angle step "<<angStep;
 
     qDebug()<<"X num "<<keys.length();
-    qDebug()<<"point num "<<sum;
     for(int i=0; i<keys.length(); i++)
     {
         QByteArray dataxx = m_dataMap.value(i);
-
+        char sp = ' ';
+        QList<QByteArray> lArry = dataxx.split(sp);
         QStringList xxList = QString(dataxx).split(" ");
         QString xx = xxList.at(25);
         sum = xx.toUInt(&ok, 16);
-        qDebug()<<"for point num "<<sum;
+
         for(int j=0; j< sum; j++)
         {
             strTmp = xxList.at(26 + j);
@@ -306,21 +320,24 @@ void FileSaver::mapFile()
             double y = strTmp.toInt(&ok, 16) * factors * sin((startAng + j*angStep) / 180 * M_PI) / 1000;
 
             double x = (double)i;
-            strFile = strFile + (QString::number(x, 'e', 17)) + (" ") + (QString::number(y, 'e', 17)) + (" ")
-                    + (QString::number(z, 'e', 17)) + " 1" + ("\n");
+
+            QString tmpStr = (QString::number(x, 'e', 17)) + (" ") + (QString::number(y, 'e', 17)) + (" ")
+                             + (QString::number(z, 'e', 17)) + ("\n");
+
+            int len = tmpStr.toLatin1().size();
+            memcpy(pMap+size, tmpStr.toStdString().data(), len);
+            size = size+len;
         }
     }
-    qDebug()<<"end for function";
-    strFile = strFile + ("MeshStatus\n0\nEnd");
-    qDebug()<<"luck";
+
+    strFile = ("MeshStatus\n0\nEnd");
     QByteArray data = strFile.toLatin1();
-    qDebug()<<"data size "<<data.size();
     file.resize(data.size());
-    uchar *pMap = file.map(0, data.size());
+
     if(pMap)
     {
         //memcpy(pOutputData,strData.data(),data.size());
-        memcpy(pMap, strFile.toStdString().data(), data.size());
+        memcpy(pMap + size, strFile.toStdString().data(), data.size());
         file.unmap(pMap);
         qDebug()<<"file unmap";
     }

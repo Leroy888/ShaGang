@@ -8,7 +8,8 @@ JsonReader::JsonReader(const QString &fileName) : m_fileName(fileName)
 
 }
 
-void JsonReader::parseJson(QMap<QString, QStringList> &menuMap, QMap<QString, QString> &plugMap)
+void JsonReader::parseJson(QList<MenuData*>& menuDataList, QMap<QString,QList<MenuData*>>& childMenuDataMap,
+                           QMap<QString,QList<MenuData*>>& actionDataMap)
 {
     QFile file(m_fileName);
     if(!file.open(QIODevice::ReadOnly))
@@ -65,10 +66,10 @@ void JsonReader::parseJson(QMap<QString, QStringList> &menuMap, QMap<QString, QS
                                 actionList.append(text);
 
                                 QString strDll = actionObj.value("dll").toString();
-                                plugMap.insert(text, strDll);
+                                //menuMap.insert(text, strDll);
                             }
                         }
-                        menuMap.insert(menuText, actionList);
+                       // actionMap.insert(menuText, actionList);
                     }
                 }
             }

@@ -16,5 +16,13 @@
         <file>images/stop.ico</file>
         <file>images/up.ico</file>
         <file>images/up16.png</file>
+        <file>images/hide.png</file>
+        <file>images/show.png</file>
+        <file>images/border.png</file>
+        <file>images/entity.png</file>
+        <file>images/orthgraph.png</file>
+        <file>images/pointsCloud.png</file>
+        <file>images/render.png</file>
+        <file>images/shade.png</file>
     </qresource>
 </RCC>

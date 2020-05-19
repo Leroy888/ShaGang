@@ -1,0 +1,596 @@
+{
+  "menus": [
+    {
+      "CN_menu": "文件",
+      "EN_menu": "File",
+      "cmd": "",
+      "cmd_id": 0,
+      "enabled": false,
+      "shortcut": "",
+      "icon": "",
+      "child": [
+        {
+          "CN_menu": "新建",
+          "EN_menu": "New",
+          "cmd": "SY_GL_New",
+          "cmd_id": 10011,
+          "enabled": false,
+          "shortcut": "Ctrl+N",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "保存",
+          "EN_menu": "Save",
+          "cmd": "SY_GL_SAVE",
+          "cmd_id": 10021,
+          "enabled": false,
+          "shortcut": "Ctrl+S",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "另存为",
+          "EN_menu": "SaveAs",
+          "cmd": "SY_GL_SAVE_AS",
+          "cmd_id": 10031,
+          "enabled": false,
+          "shortcut": "",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "退出",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "",
+          "icon": "",
+          "child": [
+            
+          ]
+        }
+      ]
+    },
+    {
+      "CN_menu": "编辑",
+      "EN_menu": "Edit",
+      "cmd": "",
+      "cmd_id": 0,
+      "enabled": false,
+      "shortcut": "",
+      "icon": "",
+      "child": [
+        {
+          "CN_menu": "复制",
+          "EN_menu": "Trans",
+          "cmd": "SY_GL_RELOAD",
+          "cmd_id": 1007,
+          "enabled": false,
+          "shortcut": "r",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "粘贴",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "删除",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        }
+      ]
+    },
+    {
+      "CN_menu": "图像",
+      "EN_menu": "draw",
+      "cmd": "",
+      "cmd_id": 0,
+      "enabled": false,
+      "shortcut": "",
+      "icon": "",
+      "child": [
+        {
+          "CN_menu": "点云",
+          "EN_menu": "Points",
+          "cmd": "SY_GL_DRAW_POINTS",
+          "cmd_id": 1027,
+          "enabled": true,
+          "shortcut": "",
+          "icon": ":/images/pointsCloud.png",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "网格",
+          "EN_menu": "Fill",
+          "cmd": "SY_GL_DRAW_FILL",
+          "cmd_id": 1018,
+          "enabled": false,
+          "shortcut": "1",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "实体",
+          "EN_menu": "Fill",
+          "cmd": "SY_GL_DRAW_FILL",
+          "cmd_id": 1018,
+          "enabled": true,
+          "shortcut": "1",
+          "icon": ":/images/entity.png",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "边框",
+          "EN_menu": "Line",
+          "cmd": "SY_GL_DRAW_LINE",
+          "cmd_id": 1017,
+          "enabled": true,
+          "shortcut": "0",
+          "icon": ":/images/border.png",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "渲染",
+          "EN_menu": "ShadeFlat",
+          "cmd": "SY_GL_DRAW_SHADE_FLAT",
+          "cmd_id": 1021,
+          "enabled": true,
+          "shortcut": "4",
+          "icon": ":/images/render.png",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "明暗处理",
+          "EN_menu": "ShadeSmooth",
+          "cmd": "SY_GL_DRAW_SKELETON_SMOOTH",
+          "cmd_id": 1025,
+          "enabled": true,
+          "shortcut": "8",
+          "icon": ":/images/shade.png",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "绘平面直线",
+          "EN_menu": "ShadeFlateLine",
+          "cmd": "SY_GL_DRAW_SHADE_FLAT_AND_LINE",
+          "cmd_id": 1023,
+          "enabled": false,
+          "shortcut": "6",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "平滑阴影",
+          "EN_menu": "ShadeSmooth",
+          "cmd": "SY_GL_DRAW_SHADE_SMOOTH",
+          "cmd_id": 1024,
+          "enabled": false,
+          "shortcut": "7",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "平滑框架",
+          "EN_menu": "SkeletonSmooth",
+          "cmd": "SY_GL_DRAW_SKELETON_SMOOTH",
+          "cmd_id": 1025,
+          "enabled": false,
+          "shortcut": "8",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "平滑阴影线",
+          "EN_menu": "ShadeSmoothLine",
+          "cmd": "SY_GL_DRAW_SHADE_SMOOTH_AND_LINE",
+          "cmd_id": 1026,
+          "enabled": false,
+          "shortcut": "9",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "绘点",
+          "EN_menu": "Points",
+          "cmd": "SY_GL_DRAW_POINTS",
+          "cmd_id": 1027,
+          "enabled": false,
+          "shortcut": "",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "绘隐含点",
+          "EN_menu": "PointsHidden",
+          "cmd": "SY_GL_DRAW_POINTS_HIDDEN",
+          "cmd_id": 1028,
+          "enabled": false,
+          "shortcut": "",
+          "icon": "",
+          "child": [
+            
+          ]
+        }
+      ]
+    },
+    {
+      "CN_menu": "窗口",
+      "EN_menu": "Quit",
+      "cmd": "SY_GL_QUIT",
+      "cmd_id": 1000,
+      "enabled": false,
+      "shortcut": "q",
+      "icon": "",
+      "child": [
+        {
+          "CN_menu": "显示所有",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        }
+      ]
+    },
+    {
+      "CN_menu": "视图",
+      "EN_menu": "showAxis",
+      "cmd": "",
+      "cmd_id": 0,
+      "enabled": false,
+      "shortcut": "",
+      "icon": "",
+      "child": [
+        {
+          "CN_menu": "正视图",
+          "EN_menu": "Orthographisch",
+          "cmd": "SY_GL_ORTHGRAPH_PRO",
+          "cmd_id": 1011,
+          "enabled": true,
+          "shortcut": "o",
+          "icon": ":/images/orthgraph.png",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "左视图",
+          "EN_menu": "moveAxis",
+          "cmd": "SY_GL_MOVE_AXIS",
+          "cmd_id": 1015,
+          "enabled": false,
+          "shortcut": "A",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "右视图",
+          "EN_menu": "moveLight",
+          "cmd": "SY_GL_MOVE_LIGHT",
+          "cmd_id": 1016,
+          "enabled": false,
+          "shortcut": "L",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "顶视图",
+          "EN_menu": "moveLight",
+          "cmd": "SY_GL_MOVE_LIGHT",
+          "cmd_id": 1016,
+          "enabled": false,
+          "shortcut": "L",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "仰视图",
+          "EN_menu": "moveLight",
+          "cmd": "SY_GL_MOVE_LIGHT",
+          "cmd_id": 1016,
+          "enabled": false,
+          "shortcut": "L",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "后视图",
+          "EN_menu": "moveLight",
+          "cmd": "SY_GL_MOVE_LIGHT",
+          "cmd_id": 1016,
+          "enabled": false,
+          "shortcut": "L",
+          "icon": "",
+          "child": [
+            
+          ]
+        }
+      ]
+    },
+    {
+      "CN_menu": "工具",
+      "EN_menu": "Tools",
+      "cmd": "",
+      "cmd_id": 0,
+      "enabled": false,
+      "shortcut": "",
+      "icon": "",
+      "child": [
+        {
+          "CN_menu": "旋转",
+          "EN_menu": "Trans",
+          "cmd": "",
+          "cmd_id": 0,
+          "enabled": true,
+          "shortcut": "",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "测量",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "缩放",
+          "EN_menu": "Zoom",
+          "cmd": "",
+          "cmd_id": 0,
+          "enabled": true,
+          "shortcut": "",
+          "icon": "",
+          "child": [
+            {
+              "CN_menu": "放大",
+              "EN_menu": "Quit",
+              "cmd": "SY_GL_ZOOM_OUT",
+              "cmd_id": 1005,
+              "enabled": true,
+              "shortcut": "Z/+",
+              "icon": "",
+              "child": [
+                
+              ]
+            },
+            {
+              "CN_menu": "缩小",
+              "EN_menu": "Quit",
+              "cmd": "SY_GL_ZOOM_IN",
+              "cmd_id": 1006,
+              "enabled": true,
+              "shortcut": "",
+              "icon": "",
+              "child": [
+                
+              ]
+            }
+          ]
+        },
+        {
+          "CN_menu": "量角器",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "对称",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "镜像",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "阵列",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "对齐",
+          "EN_menu": "Quit",
+          "cmd": "SY_GL_QUIT",
+          "cmd_id": 1000,
+          "enabled": false,
+          "shortcut": "q",
+          "icon": "",
+          "child": [
+            
+          ]
+        }
+      ]
+    },
+    {
+      "CN_menu": "帮助",
+      "EN_menu": "zoom",
+      "cmd": "",
+      "cmd_id": 0,
+      "enabled": false,
+      "shortcut": "",
+      "icon": "",
+      "child": [
+        {
+          "CN_menu": "EA3D ISS帮助",
+          "EN_menu": "zoomOut",
+          "cmd": "SY_GL_ZOOM_OUT",
+          "cmd_id": 1005,
+          "enabled": false,
+          "shortcut": "Z",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "新功能",
+          "EN_menu": "zoomIn",
+          "cmd": "SY_GL_ZOOM_IN",
+          "cmd_id": 1006,
+          "enabled": false,
+          "shortcut": "z",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "EA3D SS学习频道",
+          "EN_menu": "shadow",
+          "cmd": "SY_GL_SHADOW",
+          "cmd_id": 1008,
+          "enabled": false,
+          "shortcut": "s",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "教程",
+          "EN_menu": "screenshot",
+          "cmd": "SY_GL_SCREENSHOT",
+          "cmd_id": 1009,
+          "enabled": false,
+          "shortcut": "S",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "学习途径",
+          "EN_menu": "tansPlanes",
+          "cmd": "SY_GL_TRANS_PLANES",
+          "cmd_id": 1010,
+          "enabled": false,
+          "shortcut": "t",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "可用学习资源",
+          "EN_menu": "tansPlanes",
+          "cmd": "SY_GL_TRANS_PLANES",
+          "cmd_id": 1010,
+          "enabled": false,
+          "shortcut": "t",
+          "icon": "",
+          "child": [
+            
+          ]
+        },
+        {
+          "CN_menu": "反馈",
+          "EN_menu": "tansPlanes",
+          "cmd": "SY_GL_TRANS_PLANES",
+          "cmd_id": 1010,
+          "enabled": false,
+          "shortcut": "t",
+          "icon": "",
+          "child": [
+            
+          ]
+        }
+      ]
+    }
+  ]
+}

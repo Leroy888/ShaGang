@@ -2,7 +2,6 @@
 #define FORMMANAGER_H
 
 #include <QWidget>
-#include "Form.h"
 
 class FormManager
 {

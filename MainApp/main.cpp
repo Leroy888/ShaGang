@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QMutex>
 #include <QDateTime>
+#include <QThread>
 
 #include <QDebug>
 
@@ -49,9 +50,10 @@ int main(int argc, char *argv[])
     {
         a.setStyleSheet(file.readAll());
     }
+    file.close();
 
     MainWindow w;
-    w.show();
-    
+    w.loadModel();
+    w.showMaximized();
     return a.exec();
 }

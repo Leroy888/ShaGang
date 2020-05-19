@@ -9,11 +9,11 @@ class DeviceFactory
 {
 public:
     DeviceFactory() {}
-    static DeviceModel* getDevice(const QString &device, const QString &ip, const int port)
+    static DeviceModel* getDevice(const QString &device, const QString &ip, const int port, const QString &com = "")
     {
         if(device.toUpper() == QString("LMS5XX"))
         {
-            return new Lms5XX(ip, port);
+            return new Lms5XX(ip, port, com);
         }
         else
         {

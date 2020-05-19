@@ -25,6 +25,26 @@ QWidget#MainWindow {
 		background: rgb(238, 238, 238);
 }
 
+QToolBar {
+background-color: rgb(77, 77, 77);
+border: none;
+padding: 0px;
+}
+
+QToolBar:handle {
+background: rgb(0, 0, 0);
+border: 1px dotted black;
+width:2px;	/* 菜单间隔的宽度*/
+
+
+}
+
+QToolBar::separator {
+width: 28px;
+background-color: rgb(77, 77, 77);
+}
+
+
 QWidget#messageWidget {
 		background: rgba(68, 69, 73, 50%);
 }
@@ -62,7 +82,7 @@ QToolTip{
 
 /**********菜单栏**********/
 QMenuBar {
-        background: rgb(57, 58, 60);
+        background: rgb(77, 77, 77);
         border: none;
 }
 QMenuBar::item {
@@ -73,7 +93,7 @@ QMenuBar::item:enabled {
         color: rgb(227, 234, 242);
 }
 QMenuBar::item:!enabled {
-        color: rgb(155, 155, 155);
+        color: rgb(153, 153, 153);
 }
 QMenuBar::item:enabled:selected {
         background: rgba(255, 255, 255, 40);
@@ -82,7 +102,7 @@ QMenuBar::item:enabled:selected {
 /**********菜单**********/
 QMenu {
         border: 1px solid rgb(100, 100, 100);
-        background: rgb(68, 69, 73);
+        background: rgb(69, 69, 69);
 }
 QMenu::item {
         height: 22px;
@@ -96,8 +116,9 @@ QMenu::item:!enabled {
 }
 QMenu::item:enabled:selected {
         color: rgb(230, 230, 230);
-        background: rgba(255, 255, 255, 40);
+        background: rgba(0, 87, 207, 0.86);
 }
+
 QMenu::separator {
         height: 1px;
         background: rgb(100, 100, 100);
@@ -110,6 +131,7 @@ QMenu::icon {
         padding-left: 2px;
         padding-right: 2px;
 }
+
 
 /**********状态栏**********/
 QStatusBar {
@@ -124,25 +146,24 @@ QStatusBar::item {
 QGroupBox {
 		font-size: 15px;
 		border: 1px solid rgb(80, 80, 80);
-		border-radius: 4px;
-		margin-top: 10px;
+		border-radius: 0px;
 }
 QGroupBox::title {
 		color: rgb(18, 18, 18);
-		top: -12px;
 		left: 10px;
 }
 
-QGroupBox #groupBox_client{
+QGroupBox #groupBox_disp{
 		font-size: 15px;
 		border: 1px solid rgb(80, 80, 80);
 		border-radius: 0px;
-		margin-top: 10px;
+		margin-top: 0px;
 }
-QGroupBox #groupBox_client::title {
+QGroupBox #groupBox_disp::title {
 		color: rgb(18, 18, 18);
-		top: -12px;
+		top: 0px;
 		left: 10px;
+		margin-top: 0px;
 }
 
 QGroupBox #grpBox_clients{
@@ -1135,5 +1156,14 @@ QPushButton#menuButton::menu-indicator{
         subcontrol-origin: padding;
         image: url(:/Black/arrowBottom);
         padding-right: 3px;
+}
+
+QPushButton#btnShow {
+		text-align: left center;
+		padding-left: 3px;
+		color: rgb(255, 255, 255);
+		border: 1px solid rgb(100, 100, 100);
+		background: rgb(72, 72, 73);
+		border-radius: 0px;
 }
 

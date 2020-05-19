@@ -16,6 +16,7 @@ public:
     void sendCmd(const QByteArray &cmd);
 
     void disconnectFromHost();
+    bool mapFile(const QString &fileName);
 private:
     void initLogic();
 private slots:
@@ -35,6 +36,9 @@ private:
     bool m_isInit;
     bool m_isTimeout;
     QMap<int,QByteArray> m_dataMap;
+    QByteArray m_data;
+
+    uchar* m_fileMap;
 };
 
 #endif // TCPSOCKET_H

@@ -9,7 +9,7 @@ QWidget *FormManager::getForm(const QString &text)
 {
     if(text == QString("ShaGang.dll") || text == QString("沙钢"))
     {
-        return new Form;
+        return (QWidget*) nullptr;
     }
     else
     {

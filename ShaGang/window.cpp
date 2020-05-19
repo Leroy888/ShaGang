@@ -50,24 +50,30 @@
 
 #include <QtWidgets>
 
-#include "GLWidget.h"
+#include "include/glplough3dwidget.h"
 #include "window.h"
 
 Window::Window(QWidget *parent) : QWidget(parent)
 {
     QGridLayout *mainLayout = new QGridLayout;
 
-    currentGlWidget = new GLWidget;
-    connect(currentGlWidget, &GLWidget::clicked,
-                        this, &Window::setCurrentGlWidget);
+    currentGlWidget = new GLPlough3DWidget;
+    connect(currentGlWidget, &GLPlough3DWidget::clicked,this, &Window::setCurrentGlWidget);
+//    connect(currentGlWidget, &GLPlough3DWidget::clicked,
+//                        this, &Window::setCurrentGlWidget);
+   // connect(currentGlWidget, &GLPlough3DWidget::sig_doubleClicked,this,&Window::slot_doubleClicked);
 
     mainLayout->setRowStretch(0, 0);
     mainLayout->setRowStretch(1, 1);
     mainLayout->setSpacing(0);
+    mainLayout->setVerticalSpacing(1);
+    mainLayout->setHorizontalSpacing(1);
+
     m_label = new QLabel();
     m_label->setMinimumHeight(28);
     mainLayout->addWidget(m_label, 0, 0);
     mainLayout->addWidget(currentGlWidget, 1, 0);
+
     setLayout(mainLayout);
 
     QTimer *timer = new QTimer(this);
@@ -95,6 +101,20 @@ void Window::mousePressEvent(QMouseEvent *event)
     //    this->setStyleSheet(style);
 }
 
+void Window::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_isCklicked = !m_isCklicked;
+    QString text = m_label->text();
+    emit sig_doubleClicked(text, m_isCklicked);
+}
+
+void Window::slot_doubleClicked()
+{
+    m_isCklicked = !m_isCklicked;
+    QString text = m_label->text();
+    emit sig_doubleClicked(text, m_isCklicked);
+}
+
 void Window::setInfo(const QString &info)
 {
     m_label->setText(info);
@@ -108,27 +128,32 @@ QString Window::getInfo() const
 void Window::setStyleColor(const QString &styleSheet, bool value)
 {
     this->setStyleSheet(styleSheet);
-    if(value)
-    {
-        currentGlWidget->setClearColor(Qt::red);
-    }
-    else
-    {
-        currentGlWidget->setClearColor(Qt::black);
-    }
+//    if(value)
+//    {
+//        currentGlWidget->setClearColor(Qt::red);
+//    }
+//    else
+//    {
+//        currentGlWidget->setClearColor(Qt::black);
+//    }
 
+}
+
+void Window::executeCommand(const int cmd)
+{
+    qDebug()<<"Window"<<__FUNCTION__<<cmd;
+    currentGlWidget->ExecuteCommand(cmd);
 }
 
 void Window::setCurrentGlWidget()
 {
-    currentGlWidget = qobject_cast<GLWidget *>(sender());
+    currentGlWidget = qobject_cast<GLPlough3DWidget *>(sender());
     QString text = m_label->text();
     emit sig_clicked(text);
-    qDebug()<<"Window emit sig_clicked";
 }
 
 void Window::rotateOneStep()
 {
-    if (currentGlWidget)
-        currentGlWidget->rotateBy(+2 * 16, +2 * 16, -1 * 16);
+//    if (currentGlWidget)
+//        currentGlWidget->rotateBy(+2 * 16, +2 * 16, -1 * 16);
 }

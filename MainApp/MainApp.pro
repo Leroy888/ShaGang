@@ -1,21 +1,26 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-10-02T08:41:00
+# Project created by QtCreator 2020-05-06
 #
 #-------------------------------------------------
 
 QT       += core gui network serialport
+
+CONFIG += c++11
+QMAKE_CXXFLAGS += -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = MainApp
 TEMPLATE = app
 
-INCLUDEPATH += ../ShaGang \
-                /steel \
-                ../SteelDll
+RC_FILE += app.rc
 
-LIBS += $$PWD/libs/Steel.dll
+INCLUDEPATH += ../ShaGang \
+                /com
+
+
+#LIBS += $$PWD/libs/Steel.dll
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -31,17 +36,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        Executor.cpp \
         FormManager.cpp \
         JsonReader.cpp \
+        com/Functions.cpp \
         mainwindow.cpp
 
 HEADERS  += mainwindow.h \
-    Executor.h \
+    Command.h \
     FormManager.h \
     FuncInterface.h \
     JsonReader.h \
-    UiInterface.h
+    UiInterface.h \
+    com/Functions.h
 
 FORMS    += mainwindow.ui
 

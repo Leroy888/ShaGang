@@ -2,15 +2,18 @@
 #include "ui_ClientForm.h"
 #include <QDebug>
 
-ClientForm::ClientForm(const QString &ip, int port, QString &strDev, QWidget *parent) :QWidget(parent), ui(new Ui::ClientForm),
-  m_ip(ip), m_port(port)
+ClientForm::ClientForm(QString &strDev, QWidget *parent) : QWidget(parent),
+    ui(new Ui::ClientForm), m_strDev(strDev)
 {
     ui->setupUi(this);
 
-    m_socket = new TcpSocket(ip, port);
-    connect(ui->widget,SIGNAL(sig_clicked(QString&)),this,SLOT(slot_clicked(QString&)));
+    ui->widget->setInfo(strDev);
 
-    m_devModel = DeviceFactory::getDevice(strDev, ip, port);
+    m_isClicked = false;
+
+    connect(ui->widget,SIGNAL(sig_clicked(QString&)),this,SLOT(slot_clicked(QString&)));
+    connect(ui->widget,&Window::sig_doubleClicked,this,&ClientForm::slot_doubleClicked);
+
 }
 
 ClientForm::~ClientForm()
@@ -22,6 +25,12 @@ void ClientForm::mouseReleaseEvent(QMouseEvent *)
 {
     QString info = ui->widget->getInfo();
     emit sig_clicked(this, info);
+}
+
+void ClientForm::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_isClicked = !m_isClicked;
+    emit sig_doubleClicked(this, m_strDev, m_isClicked);
 }
 
 void ClientForm::setInfo(const QString info)
@@ -39,48 +48,24 @@ void ClientForm::setStyleSheet(const QString &styleSheet, bool value)
     ui->widget->setStyleColor(styleSheet, value);
 }
 
-void ClientForm::connectToHost()
+void ClientForm::executeCommand(const int cmd)
 {
-    m_devModel->connectToHost();
-}
-
-void ClientForm::start()
-{
-    m_devModel->start();
-}
-
-void ClientForm::stop()
-{
-    m_devModel->stop();
-}
-
-void ClientForm::sendCmd(const QByteArray &cmd)
-{
-    m_devModel->sendCmd(cmd);
-}
-
-void ClientForm::disconnectToHost()
-{
-    m_devModel->disconnectFromHost();
-}
-
-void ClientForm::status()
-{
-    m_devModel->status();
-}
-
-void ClientForm::trig()
-{
-    m_devModel->trig();
-}
-
-void ClientForm::autoTrig(bool value)
-{
-    m_devModel->autoTrig(value);
+    qDebug()<<"ClientForm"<<__FUNCTION__<<cmd;
+    ui->widget->executeCommand(cmd);
 }
 
 void ClientForm::slot_clicked(QString& info)
 {
     emit sig_clicked(this, info);
-    qDebug()<<"Client emit sig_clicked";
+}
+
+void ClientForm::slot_doubleClicked(QString &info, bool value)
+{
+    emit sig_doubleClicked(this, info, value);
+}
+
+void ClientForm::slot_update()
+{
+    qDebug()<<"ClientForm"<<__FUNCTION__;
+  //  ui->widget->executeCommand(1007);
 }

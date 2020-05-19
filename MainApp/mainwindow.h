@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QMap>
+#include "com/Functions.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ public:
     
     void populateMenus(QObject *pluginInterface, UiInterface *i);
 
+    void loadModel();
 protected:
     void slot_action_clicked();
     bool loadPlugins(const QString &fileName);
@@ -30,9 +32,22 @@ private slots:
     void slt_WidgetActionTriggered();
 private:
     Ui::MainWindow *ui;
+
+    QWidget* m_curWidget;
+    QAction* m_plugAction;
+
+    QAction* m_backAction;
+    QAction* m_nextAction;
     
-    QMap<QString,QString> m_pluginMap;
-    QMap<QString,QStringList> m_menuMap;
+    QMap<QString,QString> m_menuMap;
+    QMap<QString,QStringList> m_actionMap;
+    QList<QAction*> m_actionList;
+    QList<QMenu*> m_menuList;
+    QMap<QString,QMenu*> m_childMenuMap;
+
+    QList<MenuData*> m_menuDataList;
+    QMap<QString,QList<MenuData*>> m_childMenuDataMap;
+    QMap<QString,QList<MenuData*>> m_actionDataMap;
 };
 
 #endif // MAINWINDOW_H
