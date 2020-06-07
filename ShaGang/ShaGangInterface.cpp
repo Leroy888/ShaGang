@@ -3,6 +3,7 @@
 #include <qpushbutton.h>
 #include "window.h"
 #include <iostream>
+#include <QThread>
 
 #include "qdebug.h"
 
@@ -38,6 +39,7 @@ QWidget* ShaGangInterface::centerWidget(QList<MenuData*>& menuDataList, QMap<QSt
         m_form->parseJson(menuDataList, childMenuDataMap, actionDataMap);
         toolBars = m_form->getToolBars();
     }
+    qDebug()<<"ShaGangInterface ID "<<QThread::currentThreadId();
 
     return m_form;
 }

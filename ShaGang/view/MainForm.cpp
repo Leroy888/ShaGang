@@ -5,6 +5,7 @@
 
 #include <QDebug>
 
+
 MainForm* MainForm::m_instance = nullptr;
 
 MainForm::MainForm(QWidget *parent) :
@@ -13,7 +14,10 @@ MainForm::MainForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    qDebug()<<"MainForm ID "<<QThread::currentThreadId();
+
     readIni();
+ //   g_ringBuffer = new CRingBuffer<Points3D>(g_nResolution);
 
     initUi();
 
@@ -38,6 +42,8 @@ void MainForm::readIni()
     settings->readSetting(strNode + QString("strCom"), m_strCom);
     settings->readSetting(strNode + QString("strDev"), m_strDev);
     settings->readSetting(strNode + QString("strPort"), m_strPort);
+//    settings->readSetting(strNode + QString("resolution"), g_nResolution);
+//    settings->readSetting(strNode + QString("pointCount"), g_nPtCount);
 
     strNode = QString("ToolBar/");
     int barNum = 0;
@@ -61,9 +67,6 @@ void MainForm::readIni()
         settings->readSetting(strNode + QString("ip_%1").arg(QString::number(i + 1)), strIp);
 
         m_devIpMap.insert(strDev, strIp);
-
-//        DeviceModel* model = DeviceFactory::getDevice("LMS5XX", strIp, 2111, "COM3");
-//        m_devModelMap.insert(strDev, model);
     }
 
     strNode = QString("Param/");
@@ -94,6 +97,7 @@ void MainForm::initUi()
 
     QString style = "border-radius: 1px;border:1px solid black;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
 
+    ui->gridLayout_client->setContentsMargins(2, 2, 2, 2);
     int num = 0;
     for(it; it != m_devIpMap.end(); it++, num++)
     {
@@ -103,13 +107,13 @@ void MainForm::initUi()
 
         SG_Data sgData;
         sgData.info = strDev;
-        DataForm* df = new DataForm(sgData);
+        DataFrame* df = new DataFrame(sgData);
         dw->addWidget(df);
-        connect(wdt,&ClientForm::sig_updateData,df,&DataForm::slot_updateData);
+        connect(wdt,&ClientForm::sig_updateData,df,&DataFrame::slot_updateData);
 
-        ControlForm* cf = new ControlForm(strDev, m_strDev, it.value());
+        ControlFrame* cf = new ControlFrame(strDev, m_strDev, it.value());
         dw2->addWidget(cf);
-        connect(cf,&ControlForm::sig_update,wdt,&ClientForm::slot_update);
+        connect(cf,&ControlFrame::sig_update,wdt,&ClientForm::slot_update);
 
         m_devFormMap.insert(strDev, wdt);
         connect(wdt,SIGNAL(sig_clicked(QWidget*, QString&)),this,SLOT(slot_clicked(QWidget*, QString&)));
@@ -172,12 +176,12 @@ void MainForm::updateUi()
     {
         if(m_curWidget == form)
         {
-            QString style = "border-radius: 1px;border:1px solid red;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
+            QString style = "border-radius: 0px;border:2px solid rgb(248, 181, 0);background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
             form->setStyleSheet(style, true);
         }
         else
         {
-            QString style = "border-radius: 1px;border:1px solid black;background:#ffffff; color: rgb(18, 18, 18);font-size: 25px;";
+            QString style = "border-radius: 0px;border:1px solid black;background:rgb(102,102,102); color: rgb(18, 18, 18);font-size: 25px;";
             form->setStyleSheet(style, false);
         }
     }

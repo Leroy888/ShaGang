@@ -24,10 +24,6 @@ public:
 private slots:
     void on_btnTrig_clicked();
 
-    void on_btnAuto_clicked();
-
-    void on_btnStart_clicked();
-
     void on_btnStatus_clicked();
 
     void on_btnShow_clicked();

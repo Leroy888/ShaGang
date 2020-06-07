@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(81, 81, 81);</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <property name="leftMargin">
     <number>0</number>
@@ -21,7 +24,7 @@
     <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
     <number>0</number>
@@ -54,24 +57,27 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
+     <widget class="QWidget" name="scrollAreaWidget">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>240</width>
+        <width>246</width>
         <height>409</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(81, 81, 81);</string>
+      </property>
       <layout class="QGridLayout" name="gridLayout">
        <property name="leftMargin">
-        <number>0</number>
+        <number>5</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -81,7 +87,13 @@
        </property>
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
          <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="rightMargin">
           <number>2</number>
          </property>
         </layout>

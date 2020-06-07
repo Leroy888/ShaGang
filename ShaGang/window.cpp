@@ -53,7 +53,7 @@
 #include "include/glplough3dwidget.h"
 #include "window.h"
 
-Window::Window(QWidget *parent) : QWidget(parent)
+Window::Window(QWidget *parent) : QFrame(parent)
 {
     QGridLayout *mainLayout = new QGridLayout;
 
@@ -66,11 +66,13 @@ Window::Window(QWidget *parent) : QWidget(parent)
     mainLayout->setRowStretch(0, 0);
     mainLayout->setRowStretch(1, 1);
     mainLayout->setSpacing(0);
-    mainLayout->setVerticalSpacing(1);
+    mainLayout->setVerticalSpacing(0);
     mainLayout->setHorizontalSpacing(1);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     m_label = new QLabel();
     m_label->setMinimumHeight(28);
+
     mainLayout->addWidget(m_label, 0, 0);
     mainLayout->addWidget(currentGlWidget, 1, 0);
 
@@ -118,6 +120,7 @@ void Window::slot_doubleClicked()
 void Window::setInfo(const QString &info)
 {
     m_label->setText(info);
+    qDebug()<<"label"<<info;
 }
 
 QString Window::getInfo() const
@@ -128,6 +131,8 @@ QString Window::getInfo() const
 void Window::setStyleColor(const QString &styleSheet, bool value)
 {
     this->setStyleSheet(styleSheet);
+    QString style = "border-radius: 0px;border:0px solid black;background:#000000; color: rgb(255, 255, 255);font-size: 25px;";
+    m_label->setStyleSheet(style);
 //    if(value)
 //    {
 //        currentGlWidget->setClearColor(Qt::red);

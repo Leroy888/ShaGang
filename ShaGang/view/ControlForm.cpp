@@ -1,6 +1,8 @@
 #include "ControlForm.h"
 #include "ui_ControlForm.h"
 #include "com/Command.h"
+#include <QMatrix>
+#include "../MainApp/com/Functions.h"
 
 ControlForm::ControlForm(const QString &info, const QString &type, const QString &ip, Widget *parent) :
     Widget(parent), ui(new Ui::ControlForm),  m_info(info)
@@ -12,10 +14,6 @@ ControlForm::ControlForm(const QString &info, const QString &type, const QString
     QString strIp = ip.split(":").at(0);
     QString port = ip.split(":").at(1);
     m_devModel = DeviceFactory::getDevice(type, strIp, port.toInt());
-    if(m_devModel)
-    {
-        m_devModel->connectToHost();
-    }
 
     m_timer = new QTimer(this);
     connect(m_timer,&QTimer::timeout,this,&ControlForm::slot_timeout);
@@ -32,7 +30,7 @@ void ControlForm::on_btnTrig_clicked()
     if(isChecked)
     {
         m_timer->start(5000);
-        ui->btnTrig->setIcon(QIcon(":/images/stop.ico"));
+        ui->btnTrig->setIcon(QIcon(":/images/stop.png"));
     }
     else
     {
@@ -40,20 +38,10 @@ void ControlForm::on_btnTrig_clicked()
         {
             m_timer->stop();
         }
-        ui->btnTrig->setIcon(QIcon(":/images/start.ico"));
+        ui->btnTrig->setIcon(QIcon(":/images/start.png"));
     }
 
     m_devModel->autoTrig(isChecked);
-}
-
-void ControlForm::on_btnAuto_clicked()
-{
-
-}
-
-void ControlForm::on_btnStart_clicked()
-{
-    emit sig_btnStart_click();
 }
 
 void ControlForm::on_btnStatus_clicked()

@@ -4,19 +4,19 @@
 #include <QString>
 #include <QByteArray>
 #include <QObject>
+#include "com/Common.h"
+
+#include <QDebug>
 
 class DeviceModel : public QObject
 {
     Q_OBJECT
 public:
     DeviceModel() {}
-    virtual void setParam(const QString &ip, int port) = 0;
-//    virtual void initDevice(const QString &strCom) = 0;
-//    virtual void initDevice(const QString &ip, int port) = 0;
+
     virtual void start() = 0;
     virtual void stop() = 0;
     virtual void sendCmd(const QByteArray &cmd) = 0;
-    virtual void connectToHost() = 0;
     virtual void disconnectFromHost() = 0;
     virtual void status() = 0;
     virtual void trig() = 0;
@@ -26,6 +26,25 @@ public:
 
 signals:
     void sig_data(QByteArray *);
+    void sig_startConnect();
+    void sig_sendCommand(const QByteArray&);
+    void sig_reloadData();
+
+    void sig_connectToPlc();
+    void sig_updateXpos(int);
+
+public slots:
+    void slot_reloadData()
+    {
+        emit sig_reloadData();
+        qDebug()<<"DeviceModel slot_reloadData";
+    }
+
+    void slot_updateData()
+    {
+
+
+    }
 };
 
 

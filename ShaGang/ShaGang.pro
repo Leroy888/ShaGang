@@ -15,6 +15,7 @@ INCLUDEPATH += ./include \
 
 
 LIBS += $$PWD/libs/GLWidget.dll
+LIBS += $$PWD/libs/snap7.dll
 
 DEFINES += CENTERWIDGETONE_LIBRARY
 
@@ -33,18 +34,26 @@ SOURCES += \
     ShaGangInterface.cpp \
     clsSettings.cpp \
     com/Command.cpp \
+    com/Common.cpp \
     model/FileSaver.cpp \
     model/JsonReader.cpp \
+    model/LRS36xx.cpp \
     model/LRSxxFileThread.cpp \
     model/Lms5XX.cpp \
+    model/PlcThread.cpp \
     model/SerialPort.cpp \
     model/SocketThread.cpp \
     model/TcpSocket.cpp \
+    snap/snap7.cpp \
     view/ClientForm.cpp \
     view/ControlForm.cpp \
+    view/ControlFrame.cpp \
     view/DataForm.cpp \
+    view/DataFrame.cpp \
     view/DataWidget.cpp \
     view/DockWidget.cpp \
+    view/Form.cpp \
+    view/Frame.cpp \
     view/MainForm.cpp \
     view/ScrollArea.cpp \
     view/Widget.cpp \
@@ -55,20 +64,30 @@ HEADERS +=\
         ShaGang_global.h \
         clsSettings.h \
         com/Command.h \
+        com/Common.h \
+        com/Global.h \
+        model/CRingBuffer.h \
         model/DeviceFactory.h \
         model/DeviceModel.h \
         model/FileSaver.h \
         model/JsonReader.h \
+        model/LRS36xx.h \
         model/LRSxxFileThread.h \
         model/Lms5XX.h \
+        model/PlcThread.h \
         model/SerialPort.h \
         model/SocketThread.h \
         model/TcpSocket.h \
+        snap/snap7.h \
         view/ClientForm.h \
         view/ControlForm.h \
+        view/ControlFrame.h \
         view/DataForm.h \
+        view/DataFrame.h \
         view/DataWidget.h \
         view/DockWidget.h \
+        view/Form.h \
+        view/Frame.h \
         view/MainForm.h \
         view/ScrollArea.h \
         view/Widget.h \
@@ -81,8 +100,12 @@ unix {
 FORMS += \
     view/ClientForm.ui \
     view/ControlForm.ui \
+    view/ControlFrame.ui \
     view/DataForm.ui \
+    view/DataFrame.ui \
     view/DataWidget.ui \
+    view/Form.ui \
+    view/Frame.ui \
     view/MainForm.ui \
     view/ScrollArea.ui
 

@@ -24,5 +24,7 @@
         <file>images/pointsCloud.png</file>
         <file>images/render.png</file>
         <file>images/shade.png</file>
+        <file>images/start.png</file>
+        <file>images/stop.png</file>
     </qresource>
 </RCC>

@@ -51,14 +51,14 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QWidget>
+#include <QFrame>
 #include <QMouseEvent>
 #include <QLabel>
 
 //class GLPlough3DWidget;
 class GLPlough3DWidget;
 
-class Window : public QWidget
+class Window : public QFrame
 {
     Q_OBJECT
 

@@ -61,7 +61,10 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QWidget" name="widget" native="true">
+         <widget class="QWidget" name="widget_client" native="true">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(102, 102, 102);</string>
+          </property>
           <layout class="QGridLayout" name="gridLayout_2">
            <property name="leftMargin">
             <number>0</number>
@@ -79,7 +82,11 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_client"/>
+            <layout class="QGridLayout" name="gridLayout_client">
+             <property name="spacing">
+              <number>4</number>
+             </property>
+            </layout>
            </item>
           </layout>
          </widget>

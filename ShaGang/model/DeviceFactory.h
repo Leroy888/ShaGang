@@ -13,7 +13,7 @@ public:
     {
         if(device.toUpper() == QString("LMS5XX"))
         {
-            return new Lms5XX(ip, port, com);
+            return new Lms5XX(ip, port, com, device);
         }
         else
         {

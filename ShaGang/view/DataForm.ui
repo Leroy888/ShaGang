@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(102, 102, 102);
+</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -39,6 +43,9 @@
        <width>16777215</width>
        <height>19</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(102, 102, 102);</string>
      </property>
      <property name="text">
       <string>显示</string>

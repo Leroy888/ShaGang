@@ -24,6 +24,12 @@ void ScrollArea::addWidget(Widget *widget)
     m_formList.append(widget);
 }
 
+void ScrollArea::addWidget(Frame* frame)
+{
+    ui->verticalLayout->addWidget(frame);
+    m_frameList.append(frame);
+}
+
 void ScrollArea::on_btnShow_clicked()
 {
     if(ui->btnShow->isChecked())
@@ -39,14 +45,14 @@ void ScrollArea::on_btnShow_clicked()
 
 void ScrollArea::showForms(const bool value)
 {
-    for (auto form : m_formList) {
+    for (auto form : m_frameList) {
         form->setGrpVisible(value);
     }
 }
 
 void ScrollArea::setShow(const QString &info)
 {
-    for (auto form : m_formList) {
+    for (auto form : m_frameList) {
         if(form->getInfo() != info)
             form->setGrpVisible(false);
         else

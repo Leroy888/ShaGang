@@ -20,8 +20,6 @@ private slots:
 private:
     QString m_ip;
     int m_port;
-    TcpSocket *m_socket;
-
 
 };
 

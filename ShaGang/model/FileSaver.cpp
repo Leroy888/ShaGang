@@ -7,18 +7,29 @@
 
 #include <QDebug>
 
+#define PICENUM 500
+
+
+
 FileSaver::FileSaver(const QString &fileName, const QByteArray &data, const int num)
     : m_fileName(fileName), m_data(data), m_num(num)
 {
 
 }
 
-FileSaver::FileSaver(const QString &fileName, const QMap<int, QByteArray> &dataMap, const int num)
+FileSaver::FileSaver(const QString &fileName, const QMap<float, QByteArray> &dataMap, const int num)
 {
     m_fileName = fileName;
     m_dataMap = dataMap;
 
 }
+
+//FileSaver::FileSaver(const QString &fileName, const QList<QByteArray> &dataList, const QMap<int,QPoint> pointMap)
+//{
+//    m_fileName = fileName;
+//    m_dataList = dataList;
+//    m_pointMap = pointMap;
+//}
 
 void FileSaver::run()
 {
@@ -31,6 +42,8 @@ void FileSaver::run()
 
 
     save();
+
+    emit sig_saveOver();
 
     return;
 
@@ -143,7 +156,7 @@ void FileSaver::save()
         return;
     }
 
-    QList<int> keys = m_dataMap.keys();
+    QList<float> keys = m_dataMap.keys();
     if(keys.length() == 0)
         return;
     QByteArray tmpData = m_dataMap.value(keys.at(0));
@@ -152,33 +165,35 @@ void FileSaver::save()
     os<<"MeshVersionFormatted "<<2<<endl;
     strTmp = dataList.at(3);
     os<<"Dimension"<<endl;
-    os<<3<<endl;
+    os<<3<<endl<<"BoundingBox"<<endl<<"1.48335327582025378e-311 6.95320154086712333e-310"<<endl;
+    os<<"0.00000000000000000e+00 1.48335325337781588e-311"<<"\n"
+     <<"0.00000000000000000e+00 0.00000000000000000e+00"<<endl;
     qDebug()<<"write header";
     bool ok;
-    strTmp = dataList.at(25);
+    strTmp = dataList.at(27);
+    qDebug()<<"data sum "<<strTmp<<" #### test data sum "<<dataList.length();
     ulong sum = strTmp.toULong(&ok, 16);
     os<<"Vertices"<<endl;
     os<<sum*(keys.length())<<endl;
 
     int factors = 1;
-    if(dataList.at(21) == QString("40000000"))
+    if(dataList.at(23) == QString("40000000"))
     {
         factors = 2;
     }
     qDebug()<<"get factors";
-    strTmp = dataList.at(23);
-    int startAng = strTmp.toInt(&ok, 16) / 10000;
-    qDebug()<<"start angle "<<startAng;
+    strTmp = dataList.at(25);
+    int startAng = strTmp.toLongLong(&ok, 16);
+    qDebug()<<"start angle "<<startAng<<" hex startAngle "<<strTmp;
 
-    strTmp = dataList.at(24);
-    int ang = strTmp.toInt(&ok, 16);
-    double angStep = ang / 10000.0;
+    strTmp = dataList.at(26);
+    int angStep = strTmp.toInt(&ok, 16);
+   // double angStep = ang;
     qDebug()<<"angle step "<<angStep;
-
 
     for (int i=0; i<keys.length(); i++)
     {
-        QByteArray data = m_dataMap.value(i);
+        QByteArray data = m_dataMap.value(keys.at(i));
 
         dataList.clear();
         dataList = QString(data).split(" ");
@@ -187,19 +202,92 @@ void FileSaver::save()
         double zMax = 0;
         for(int j=0; j< sum; j++)
         {
-            strTmp = dataList.at(26 + j);
-            double z = strTmp.toInt(&ok, 16) * factors * cos((startAng + j*angStep) / 180 * M_PI) / 1000;
-            double y = strTmp.toInt(&ok, 16) * factors * sin((startAng + j*angStep) / 180 * M_PI) / 1000;
+            strTmp = dataList.at(28 + j);
+            double z = strTmp.toInt(&ok, 16) * factors * cos((startAng + j*angStep) / (180 * 10000.0) * M_PI) ;
+            double y = strTmp.toInt(&ok, 16) * factors * sin((startAng + j*angStep) / (180 * 10000.0) * M_PI) ;
             if(z > zMax)
                 zMax = z;
             if(y > yMax)
                 yMax = y;
-            os<<(double)i<<" "<<y<<" "<<z<<" "<<1<<endl;
+            os<<(double)(keys.at(i))<<" "<<y<<" "<<z<<" "<<1<<endl;
         }
     }
     os<<"MeshStatus\n"<<0<<"\nEnd";
 
     file.close();
+}
+
+void FileSaver::saveMap()
+{
+//    QFile file(m_fileName);
+//    QTextStream os(&file);
+//    os.setRealNumberNotation(QTextStream::ScientificNotation);
+//    os.setRealNumberPrecision(17);
+
+//    if(!file.open(QFile::ReadWrite))
+//    {
+//        qDebug()<<"Open "<<m_fileName<<"failed";
+//        return;
+//    }
+
+//    if(m_dataList.length() == 0)
+//        return;
+//    QByteArray tmpData = m_dataList.at(0);
+//    QStringList dataList = QString(tmpData).split(" ");
+//    QString strTmp = dataList.at(2);
+//    os<<"MeshVersionFormatted "<<2<<endl;
+//    strTmp = dataList.at(3);
+//    os<<"Dimension"<<endl;
+
+//    bool ok;
+//    strTmp = dataList.at(27);
+//    qDebug()<<"data sum "<<strTmp<<" #### test data sum "<<dataList.length();
+//    ulong sum = strTmp.toULong(&ok, 16);
+//    os<<"Vertices"<<endl;
+// //   os<<sum*(keys.length())<<endl;
+
+//    int factors = 1;
+//    if(dataList.at(23) == QString("40000000"))
+//    {
+//        factors = 2;
+//    }
+//    qDebug()<<"get factors";
+//    strTmp = dataList.at(25);
+//    int startAng = strTmp.toLongLong(&ok, 16);
+//    qDebug()<<"start angle "<<startAng<<" hex startAngle "<<strTmp;
+
+//    strTmp = dataList.at(26);
+//    int angStep = strTmp.toInt(&ok, 16);
+//   // double angStep = ang;
+//    qDebug()<<"angle step "<<angStep;
+
+//    for (int i=0; i<m_dataList.length(); i++)
+//    {
+//        QByteArray data = m_dataList.at(i);
+
+//        dataList.clear();
+//        dataList = QString(data).split(" ");
+
+//        strTmp = dataList.at(20); // 编码器位置
+//        int x = strTmp.toUInt(&ok, 16);
+//     //   x =
+//        double yMax = 0;
+//        double zMax = 0;
+//        for(int j=0; j< sum; j++)
+//        {
+//            strTmp = dataList.at(28 + j);
+//            double z = strTmp.toInt(&ok, 16) * factors * cos((startAng + j*angStep) / (180 * 10000.0) * M_PI) ;
+//            double y = strTmp.toInt(&ok, 16) * factors * sin((startAng + j*angStep) / (180 * 10000.0) * M_PI) ;
+//            if(z > zMax)
+//                zMax = z;
+//            if(y > yMax)
+//                yMax = y;
+//            os<<(double)(keys.at(i))<<" "<<y<<" "<<z<<" "<<1<<endl;
+//        }
+//    }
+//    os<<"MeshStatus\n"<<0<<"\nEnd";
+
+//    file.close();
 }
 
 void FileSaver::saveFile()
@@ -256,7 +344,7 @@ void FileSaver::mapFile()
         return;
     }
 
-    QList<int> keys = m_dataMap.keys();
+    QList<float> keys = m_dataMap.keys();
     if(keys.length() == 0)
         return;
     file.resize(1024*1024*15);

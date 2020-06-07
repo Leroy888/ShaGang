@@ -25,6 +25,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(102, 102, 102);</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>1</number>
@@ -40,6 +43,9 @@
    </property>
    <item>
     <widget class="QPushButton" name="btnShow">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(102, 102, 102);</string>
+     </property>
      <property name="text">
       <string>雷达车_1</string>
      </property>
@@ -86,7 +92,7 @@
         </property>
         <property name="icon">
          <iconset resource="../Res.qrc">
-          <normaloff>:/images/start.ico</normaloff>:/images/start.ico</iconset>
+          <normaloff>:/images/start.png</normaloff>:/images/start.png</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>

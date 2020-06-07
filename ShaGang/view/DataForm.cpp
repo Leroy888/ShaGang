@@ -37,35 +37,35 @@ void DataForm::initUi()
 {
     m_widgetList.clear();
 
-    QString text = QString(tr("体积"));
+    QString text = QString(tr("体积："));
     double value = m_data.volume;
     QString unit = QString("m³");
     DataWidget* dw = new DataWidget(text, value, unit);
     ui->verticalLayout->addWidget(dw);
     m_widgetList.append(dw);
 
-    text = QString(tr("面积"));
+    text = QString(tr("面积："));
     value = m_data.area;
     unit = QString("m²");
     DataWidget* dwArea = new DataWidget(text, value, unit);
     ui->verticalLayout->addWidget(dwArea);
     m_widgetList.append(dwArea);
 
-    text = QString(tr("长度"));
+    text = QString(tr("长度："));
     value = m_data.length;
     unit = QString("m");
     DataWidget* dwLen = new DataWidget(text, value, unit);
     ui->verticalLayout->addWidget(dwLen);
     m_widgetList.append(dwLen);
 
-    text = QString(tr("宽度"));
+    text = QString(tr("宽度："));
     value = m_data.width;
     unit = QString("m");
     DataWidget* dwWidth = new DataWidget(text, value, unit);
     ui->verticalLayout->addWidget(dwWidth);
     m_widgetList.append(dwWidth);
 
-    text = QString(tr("高度"));
+    text = QString(tr("高度："));
     value = m_data.height;
     unit = QString("m");
     DataWidget* dwHeight = new DataWidget(text, value, unit);

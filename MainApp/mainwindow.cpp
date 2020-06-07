@@ -13,6 +13,7 @@
 #include "FormManager.h"
 #include "JsonReader.h"
 #include "Command.h"
+#include <QThread>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -103,23 +104,7 @@ void MainWindow::loadModel()
 
 void MainWindow::readJson()
 {
-    //    JsonReader reader("./cfg/menu.txt");
-    //    reader.parseJson(m_menuMap, m_actionMap);
 
-    //    QMap<QString,QStringList>::iterator it;
-    //    for(it=m_actionMap.begin(); it != m_actionMap.end(); it++)
-    //    {
-    //        qDebug()<<it.key()<<" "<<it.value();
-    //        QMenu *menu = this->menuBar()->addMenu(it.key());
-    //        //QMenu *m = menu->addMenu("Test");
-
-    //        for(int i=0; i<it.value().length(); i++)
-    //        {
-    //            QAction *action = new QAction(it.value().at(i));
-    //            connect(action,&QAction::triggered,this,&MainWindow::slot_action_clicked);
-    //            menu->addAction(action);
-    //        }
-    //    }
 }
 
 void MainWindow::slot_action_clicked()
@@ -156,24 +141,33 @@ void MainWindow::slt_WidgetActionTriggered()
     {
         return;
     }
-    qDebug()<<"load form dll";
+
     m_curWidget = widget;
     if(!widget)
     {
         qDebug()<<"load MainForm dll failed";
     }
+    qDebug()<<"MainWindow ID "<<QThread::currentThreadId();
 
-    QToolBar* backToolBar = new QToolBar();
-    this->addToolBar(backToolBar);
-    m_backAction = ui->mainToolBar->addAction(QIcon(":/images/back.png"), "返回");
-    m_nextAction = ui->mainToolBar->addAction(QIcon(":/images/next.png"), "向前");
+    this->removeToolBar(ui->mainToolBar);
+    QToolBar* mainToolBar = new QToolBar();
+    mainToolBar->setIconSize(QSize(24, 24));
+    mainToolBar->setFixedHeight(40);
+    this->addToolBar(mainToolBar);
+    QAction* mainSpt = mainToolBar->addSeparator();
+
+    mainSpt->setIcon(QIcon(":/images/back.png"));
+    mainSpt->setSeparator(true);
+    m_backAction = mainToolBar->addAction(QIcon(":/images/back.png"), "返回");
+    m_nextAction = mainToolBar->addAction(QIcon(":/images/next.png"), "向前");
 
     QList<QToolBar*> toolBarList;
     for (int i=0; i<toolBars.count(); i++)
     {
         QToolBar* toolBar = new QToolBar();
-        toolBar->setFixedHeight(40);
         this->addToolBar(toolBar);
+        QAction* spt = toolBar->addSeparator();
+        spt->setIcon(QIcon(":/images/blackLine.png"));
         toolBarList.append(toolBar);
     }
 
@@ -243,6 +237,4 @@ void MainWindow::slt_WidgetActionTriggered()
     }
 
     setCentralWidget(widget);
-
-    return;
 }

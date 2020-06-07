@@ -25,23 +25,38 @@ QWidget#MainWindow {
 		background: rgb(238, 238, 238);
 }
 
+/*********QDockWidget间隔***********/
+
+QMainWindow#MainForm::separator{
+	background:rgb(61,61,61);
+	width:12px;
+	height:1px;
+}
+
+QDockWidget { 
+	background-color:red; 
+}
+
 QToolBar {
 background-color: rgb(77, 77, 77);
+spacing:4px;
 border: none;
 padding: 0px;
+height:2px;
 }
+
 
 QToolBar:handle {
 background: rgb(0, 0, 0);
-border: 1px dotted black;
-width:2px;	/* 菜单间隔的宽度*/
-
-
+width:1px;	/* 菜单间隔的宽度*/
+height:1px;
 }
 
 QToolBar::separator {
-width: 28px;
-background-color: rgb(77, 77, 77);
+	height:12px;
+	width: 2px;
+	background-color: rgb(77, 77, 77);
+	
 }
 
 
@@ -81,9 +96,11 @@ QToolTip{
 }
 
 /**********菜单栏**********/
+
 QMenuBar {
         background: rgb(77, 77, 77);
-        border: none;
+		border:2px;
+		border-bottom:1px solid #131313;/*为菜单项之间添加横线间隔*/
 }
 QMenuBar::item {
         padding: 5px 10px 5px 10px;
@@ -97,6 +114,13 @@ QMenuBar::item:!enabled {
 }
 QMenuBar::item:enabled:selected {
         background: rgba(255, 255, 255, 40);
+}
+
+QMenuBar::separator {
+        height: 10px;
+        background: rgb(61, 61, 61);
+		color:rgb(255, 0, 0);
+		width: 2px; 
 }
 
 /**********菜单**********/
@@ -121,7 +145,7 @@ QMenu::item:enabled:selected {
 
 QMenu::separator {
         height: 1px;
-        background: rgb(100, 100, 100);
+        background: rgb(0, 0, 0);
 }
 QMenu::indicator {
         width: 13px;
@@ -145,7 +169,7 @@ QStatusBar::item {
 /**********分组框**********/
 QGroupBox {
 		font-size: 15px;
-		border: 1px solid rgb(80, 80, 80);
+		/*border: 1px solid rgb(80, 80, 80);*/
 		border-radius: 0px;
 }
 QGroupBox::title {
@@ -166,9 +190,8 @@ QGroupBox #groupBox_disp::title {
 		margin-top: 0px;
 }
 
-QGroupBox #grpBox_clients{
-		font-size: 15px;
-		border: 1px solid rgb(80, 80, 80);
+QGroupBox #groupBox_disp{
+		border: 0px solid rgb(80, 80, 80);
 		border-radius: 0px;
 		margin-top: 0px;
 }
@@ -395,13 +418,13 @@ QScrollBar::add-page:horizontal,QScrollBar::sub-page:horizontal {
 
 /**********滚动条-垂直**********/
 QScrollBar:vertical {
-        width: 20px;
+        width: 16px;
         background: transparent;
         margin-left: 3px;
         margin-right: 3px;
 }
 QScrollBar::handle:vertical {
-        width: 20px;
+        width: 16px;
         min-height: 30px;
         background: rgb(68, 69, 73);
         margin-top: 15px;
@@ -667,6 +690,30 @@ QWidget#transparentWidget {
         background: transparent;
 }
 
+/*********QFrame************/
+
+QFrame#DataFrame{
+	background-color: rgb(102, 102, 102);
+	border:1px solid rgb(61, 61, 61);
+	border-radius: 6px;
+}
+
+QFrame#ControlFrame{
+	background-color: rgb(102, 102, 102);
+	border:1px solid rgb(61, 61, 61);
+	border-radius: 6px;
+}
+
+QWiget#ScrollArea{
+	background-color: rgb(102, 102, 102);
+}
+
+QWiget#scrollAreaWidget{
+	background-color: rgb(102, 102, 102);
+}
+
+
+
 /**********微调器**********/
 
 
@@ -864,6 +911,15 @@ QLabel#groupLabel {
 		border-right-color: transparent;
 		border-left-color: transparent;
 }
+
+QLabel#label_value {
+		border:1px solid rgb(61, 61, 61);
+}
+
+QLabel#label_unit {
+		border:1px solid rgb(61, 61, 61);
+}
+
 
 /**********按钮**********/
 QToolButton#nsccButton{

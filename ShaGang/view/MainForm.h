@@ -9,6 +9,8 @@
 #include "../MainApp/com/Functions.h"
 #include "./model/TcpSocket.h"
 #include "./view/DataForm.h"
+#include "./view/ControlFrame.h"
+#include "./view/DataFrame.h"
 
 namespace Ui {
 class MainForm;

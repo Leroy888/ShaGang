@@ -4,41 +4,74 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QTimer>
+#include <QMap>
+#include "com/Common.h"
 
-class TcpSocket : public QObject
+const uint ptNum = 3950000;
+
+class TcpSocket : public QTcpSocket
 {
     Q_OBJECT
 public:
-    TcpSocket(const QString &ip, int port);
-    ~TcpSocket();
+    TcpSocket(const QString& ip, int port, const QString& device);
 
-    bool connectToHost();
-    void sendCmd(const QByteArray &cmd);
+    void connectHost(const QString& ip, int port);
 
-    void disconnectFromHost();
-    bool mapFile(const QString &fileName);
-private:
-    void initLogic();
-private slots:
-    void slot_readData();
-    void slot_reconnect();
+    void slot_timeout();
+
+public slots:
     void slot_connect();
+    void slot_disconnect();
+    void slot_readyRead();
+
+    void slot_startConnect();
+    void slot_sendCommand(const QByteArray& cmd);
     void slot_numTimeout();
+    void slot_updateXpos(int pos);
+
+    void slot_saveOver();
+
+signals:
+    void sig_startConnect(int);
+    void sig_startTimer(int);
+    void sig_reloadData();
+    void sig_updateData();
+
+private slots:
+
 private:
     QString m_ip;
     int m_port;
-    QTcpSocket *m_socket;
-    QTimer *m_timer;
+    QString m_device;
     QStringList m_dataList;
-
-    QTimer *m_numTimer;
+    QMap<float,QByteArray> m_dataMap;
     int m_num;
-    bool m_isInit;
     bool m_isTimeout;
-    QMap<int,QByteArray> m_dataMap;
+    QTimer* m_numTimer;
+    bool m_isInit;
     QByteArray m_data;
 
-    uchar* m_fileMap;
+
+    int m_xPos; //PLC读取的X轴的位置
+    int m_lastXpos;
+    uint m_startX;
+    int m_factors;
+    ulong m_startAng;
+    int m_angStep;
+    ulong m_sum;
+    QString m_curPos;
+    QString m_lastPos;
+    uint m_index;
+    int m_xIndex;
+    bool m_isStop;
+
+    uint m_ptsNum;
+    int m_readNum;
+
+    void parseData(const QByteArray &data);
+    void parseLms511(const QByteArray &data);
+    void parse(const QByteArray &data, int start);
+    void parseLrs3601(const QByteArray &data);
 };
 
 #endif // TCPSOCKET_H

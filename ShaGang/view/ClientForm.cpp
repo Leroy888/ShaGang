@@ -7,12 +7,12 @@ ClientForm::ClientForm(QString &strDev, QWidget *parent) : QWidget(parent),
 {
     ui->setupUi(this);
 
-    ui->widget->setInfo(strDev);
+    ui->frame->setInfo(strDev);
 
     m_isClicked = false;
 
-    connect(ui->widget,SIGNAL(sig_clicked(QString&)),this,SLOT(slot_clicked(QString&)));
-    connect(ui->widget,&Window::sig_doubleClicked,this,&ClientForm::slot_doubleClicked);
+    connect(ui->frame,SIGNAL(sig_clicked(QString&)),this,SLOT(slot_clicked(QString&)));
+    connect(ui->frame,&Window::sig_doubleClicked,this,&ClientForm::slot_doubleClicked);
 
 }
 
@@ -23,7 +23,7 @@ ClientForm::~ClientForm()
 
 void ClientForm::mouseReleaseEvent(QMouseEvent *)
 {
-    QString info = ui->widget->getInfo();
+    QString info = ui->frame->getInfo();
     emit sig_clicked(this, info);
 }
 
@@ -35,23 +35,23 @@ void ClientForm::mouseDoubleClickEvent(QMouseEvent *event)
 
 void ClientForm::setInfo(const QString info)
 {
-    ui->widget->setInfo(info);
+    ui->frame->setInfo(info);
 }
 
 QString ClientForm::getInfo() const
 {
-    return ui->widget->getInfo();
+    return ui->frame->getInfo();
 }
 
 void ClientForm::setStyleSheet(const QString &styleSheet, bool value)
 {
-    ui->widget->setStyleColor(styleSheet, value);
+    ui->frame->setStyleColor(styleSheet, value);
 }
 
 void ClientForm::executeCommand(const int cmd)
 {
     qDebug()<<"ClientForm"<<__FUNCTION__<<cmd;
-    ui->widget->executeCommand(cmd);
+    ui->frame->executeCommand(cmd);
 }
 
 void ClientForm::slot_clicked(QString& info)
@@ -67,5 +67,5 @@ void ClientForm::slot_doubleClicked(QString &info, bool value)
 void ClientForm::slot_update()
 {
     qDebug()<<"ClientForm"<<__FUNCTION__;
-  //  ui->widget->executeCommand(1007);
+    ui->frame->executeCommand(1007);
 }

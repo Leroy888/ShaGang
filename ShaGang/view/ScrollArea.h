@@ -5,6 +5,7 @@
 #include "../MainApp/com/Functions.h"
 #include "DataForm.h"
 #include "Widget.h"
+#include "Frame.h"
 
 namespace Ui {
 class ScrollArea;
@@ -21,11 +22,12 @@ public:
     void addWidget(Widget *widget);
     void showForms(const bool value);
     void setShow(const QString& info);
+    void addWidget(Frame *frame);
 private slots:
     void on_btnShow_clicked();
 
 private:
-
+    QList<Frame*> m_frameList;
     QList<Widget*> m_formList;
 protected:
     Ui::ScrollArea *ui;

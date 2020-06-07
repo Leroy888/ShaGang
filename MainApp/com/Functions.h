@@ -26,6 +26,11 @@ struct SG_Data
     double height;
 };
 
+enum DeviceType{
+    LMS5XX,
+    LRS36XX
+};
+
 class Functions
 {
 public:

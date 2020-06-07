@@ -21,3 +21,8 @@ void DockWidget::setShow(const QString &info)
 {
     m_scrollArea->setShow(info);
 }
+
+void DockWidget::addWidget(Frame *frame)
+{
+    m_scrollArea->addWidget(frame);
+}
