@@ -46,9 +46,7 @@ SOURCES += \
     model/TcpSocket.cpp \
     snap/snap7.cpp \
     view/ClientForm.cpp \
-    view/ControlForm.cpp \
     view/ControlFrame.cpp \
-    view/DataForm.cpp \
     view/DataFrame.cpp \
     view/DataWidget.cpp \
     view/DockWidget.cpp \
@@ -80,9 +78,7 @@ HEADERS +=\
         model/TcpSocket.h \
         snap/snap7.h \
         view/ClientForm.h \
-        view/ControlForm.h \
         view/ControlFrame.h \
-        view/DataForm.h \
         view/DataFrame.h \
         view/DataWidget.h \
         view/DockWidget.h \
@@ -99,9 +95,7 @@ unix {
 }
 FORMS += \
     view/ClientForm.ui \
-    view/ControlForm.ui \
     view/ControlFrame.ui \
-    view/DataForm.ui \
     view/DataFrame.ui \
     view/DataWidget.ui \
     view/Form.ui \

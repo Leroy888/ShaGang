@@ -49,12 +49,13 @@ private:
     bool m_isTimeout;
     QTimer* m_numTimer;
     bool m_isInit;
+    bool m_bPlcCnnected;
     QByteArray m_data;
 
 
     int m_xPos; //PLC读取的X轴的位置
-    int m_lastXpos;
-    uint m_startX;
+    int m_lastXpos; //上一次的位置
+    int m_startXpos;
     int m_factors;
     ulong m_startAng;
     int m_angStep;

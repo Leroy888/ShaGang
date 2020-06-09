@@ -5,10 +5,8 @@
 #include <QDockWidget>
 #include "DockWidget.h"
 #include "view/ClientForm.h"
-#include "view/ControlForm.h"
 #include "../MainApp/com/Functions.h"
 #include "./model/TcpSocket.h"
-#include "./view/DataForm.h"
 #include "./view/ControlFrame.h"
 #include "./view/DataFrame.h"
 
@@ -52,10 +50,10 @@ private:
     QStringList m_paramList;
     QMap<QString,DeviceModel*> m_devModelMap;
     QMap<QString,QString> m_devIpMap;
+    QMap<QString,QString> m_plcIpMap;
     QMap<QString,ClientForm*> m_devFormMap;
-  //  QMap<QString,QPushButton*> m_devBtnMap;
-    QMap<QString,ControlForm*> m_devCtrlMap;
-    QMap<QString,DataForm*> m_dataForm;
+
+ //   QMap<QString,DataForm*> m_dataForm;
     QString m_strPort;
     QStringList m_shortcutMenus;
     QMap<int,QStringList> m_toolBarMap;

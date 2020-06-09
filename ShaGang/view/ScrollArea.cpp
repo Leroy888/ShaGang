@@ -1,7 +1,5 @@
 #include "ScrollArea.h"
 #include "ui_ScrollArea.h"
-#include "ControlForm.h"
-#include "DataForm.h"
 
 
 ScrollArea::ScrollArea(const QString &text, QWidget *parent) :

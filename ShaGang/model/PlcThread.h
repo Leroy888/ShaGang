@@ -11,7 +11,7 @@ class PlcThread : public QThread
 {
     Q_OBJECT
 public:
-    PlcThread(const QString& ip, const int port);
+    PlcThread(const QString& ip);
 
     void run();
 
@@ -27,7 +27,6 @@ public slots:
 private:
     bool m_isInit;
     QString m_ip;
-    int m_port;
     bool m_isStop;
     int m_pos;
 

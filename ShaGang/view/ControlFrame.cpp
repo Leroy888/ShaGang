@@ -1,7 +1,7 @@
 #include "ControlFrame.h"
 #include "ui_ControlFrame.h"
 
-ControlFrame::ControlFrame(const QString &info, const QString &type, const QString &ip,Frame *parent) :
+ControlFrame::ControlFrame(const QString &info, const QString &type, const QString &ip, const QString &plcIp, Frame *parent) :
     Frame(parent),
     ui(new Ui::ControlFrame), m_info(info)
 {
@@ -12,7 +12,7 @@ ControlFrame::ControlFrame(const QString &info, const QString &type, const QStri
 
     QString strIp = ip.split(":").at(0);
     QString port = ip.split(":").at(1);
-    m_devModel = DeviceFactory::getDevice(type, strIp, port.toInt());
+    m_devModel = DeviceFactory::getDevice(type, strIp, port.toInt(), plcIp);
     connect(m_devModel,&DeviceModel::sig_reloadData,this,&ControlFrame::slot_timeout);
 
     m_timer = new QTimer(this);

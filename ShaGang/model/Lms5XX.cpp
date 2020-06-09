@@ -3,10 +3,9 @@
 
 #include <QDebug>
 
-Lms5XX::Lms5XX(const QString &ip, const int port, const QString &com, const QString &device)
+Lms5XX::Lms5XX(const QString &ip, const int port, const QString &plcIp, const QString &device)
 {
     m_socket = new TcpSocket(ip, port, device);
-    m_serial = new SerialPort(com);
 
     connect(this,&Lms5XX::sig_startConnect,m_socket,&TcpSocket::slot_startConnect);
     connect(this,&Lms5XX::sig_sendCommand,m_socket,&TcpSocket::slot_sendCommand);
@@ -29,7 +28,23 @@ Lms5XX::Lms5XX(const QString &ip, const int port, const QString &com, const QStr
     m_timer->moveToThread(m_thread);
     m_numTimer->moveToThread(m_thread);
     m_thread->start();
+
+
+    // PLC网络通信
+    m_plcInstan = new PlcThread(plcIp);
+    connect(this,&Lms5XX::sig_connectToPlc,m_plcInstan,&PlcThread::slot_connect);
+    connect(m_plcInstan,&PlcThread::sig_updateXpos,m_socket,&TcpSocket::slot_updateXpos);
+
+    m_plcTimer = new QTimer;
+    connect(m_plcTimer,&QTimer::timeout,m_plcInstan,&PlcThread::slot_connect);
+
+    m_plcThread = new QThread(this);
+    m_plcTimer->moveToThread(m_plcThread);
+    m_plcInstan->moveToThread(m_plcThread);
+    m_plcThread->start();
+
     emit sig_startConnect();
+    emit sig_connectToPlc();
     qDebug()<<__FUNCTION__<<QThread::currentThreadId();
 }
 
@@ -41,8 +56,6 @@ void Lms5XX::sendCmd(const QByteArray &cmd)
 void Lms5XX::start()
 {
     qDebug()<<"start scan "<<Command::start();
-
-    m_serial->sendCmd(Command::start());
 
     emit sig_sendCommand(Command::start());
 }
@@ -61,7 +74,7 @@ void Lms5XX::disconnectFromHost()
 void Lms5XX::status()
 {
     emit sig_sendCommand(Command::status());
-    m_serial->sendCmd(Command::status());
+
     qDebug()<<__FUNCTION__<<Command::status();
 }
 
@@ -90,12 +103,5 @@ void Lms5XX::autoTrig(bool value)
 
 bool Lms5XX::initSerial()
 {
-    if(m_serial)
-    {
-        return m_serial->initSerial();
-    }
-    else
-    {
-        qDebug()<<"m_serial is null";
-    }
+
 }

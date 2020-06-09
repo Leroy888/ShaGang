@@ -2,7 +2,7 @@
 #include "com/Command.h"
 
 
-LRS36xx::LRS36xx(const QString &ip, const int port, const QString& device)
+LRS36xx::LRS36xx(const QString &ip, const int port, const QString &plcIp, const QString& device)
 {
     m_socket = new TcpSocket(ip, port, device);
     connect(this,&LRS36xx::sig_startConnect,m_socket,&TcpSocket::slot_startConnect);
@@ -20,7 +20,7 @@ LRS36xx::LRS36xx(const QString &ip, const int port, const QString& device)
     m_thread->start();
 
     // PLC网络通信
-    m_plcInstan = new PlcThread(ip, port);
+    m_plcInstan = new PlcThread(plcIp);
     connect(this,&LRS36xx::sig_connectToPlc,m_plcInstan,&PlcThread::slot_connect);
     connect(m_plcInstan,&PlcThread::sig_updateXpos,m_socket,&TcpSocket::slot_updateXpos);
 

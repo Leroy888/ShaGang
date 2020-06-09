@@ -90,6 +90,20 @@ public:
         return m_nUnreadSize;
     }
 
+    unsigned int getPointCount()
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        int count = 0;
+        for(int i=0; i<PLOUGH_3D_SEGMENT_MAX; i++)
+        {
+            if(m_pBuffer[i].enabled)
+            {
+                count += PLOUGH_3D_SEGMENT_POINTS_MAX;
+            }
+        }
+        return count;
+    }
+
     //写入数据到环形缓冲区
     //返回值：写入的数据大小
     void beginWritePointData(int segmentIndex) {

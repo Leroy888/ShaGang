@@ -42,8 +42,6 @@ void MainForm::readIni()
     settings->readSetting(strNode + QString("strCom"), m_strCom);
     settings->readSetting(strNode + QString("strDev"), m_strDev);
     settings->readSetting(strNode + QString("strPort"), m_strPort);
-//    settings->readSetting(strNode + QString("resolution"), g_nResolution);
-//    settings->readSetting(strNode + QString("pointCount"), g_nPtCount);
 
     strNode = QString("ToolBar/");
     int barNum = 0;
@@ -65,8 +63,11 @@ void MainForm::readIni()
         settings->readSetting(strNode + QString("dev_%1").arg(QString::number(i + 1)), strDev);
         QString strIp;
         settings->readSetting(strNode + QString("ip_%1").arg(QString::number(i + 1)), strIp);
-
         m_devIpMap.insert(strDev, strIp);
+
+        QString plcIp;
+        settings->readSetting(strNode + QString("plcIp_%1").arg(QString::number(i + 1)), plcIp);
+        m_plcIpMap.insert(strDev, plcIp);
     }
 
     strNode = QString("Param/");
@@ -111,7 +112,7 @@ void MainForm::initUi()
         dw->addWidget(df);
         connect(wdt,&ClientForm::sig_updateData,df,&DataFrame::slot_updateData);
 
-        ControlFrame* cf = new ControlFrame(strDev, m_strDev, it.value());
+        ControlFrame* cf = new ControlFrame(strDev, m_strDev, it.value(), m_plcIpMap.value(strDev));
         dw2->addWidget(cf);
         connect(cf,&ControlFrame::sig_update,wdt,&ClientForm::slot_update);
 

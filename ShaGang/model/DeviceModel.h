@@ -32,6 +32,7 @@ signals:
 
     void sig_connectToPlc();
     void sig_updateXpos(int);
+    void sig_startReadXpos(bool);
 
 public slots:
     void slot_reloadData()

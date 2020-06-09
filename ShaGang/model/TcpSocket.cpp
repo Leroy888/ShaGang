@@ -9,10 +9,9 @@
 #define MaxNum  65535
 #define LEN 1700
 #define DIAMETER 85
-#define FREQ 1024
-#define STEP 1.7
+#define FREQ 100000
+#define STEP 0.17
 const int dataLen = 395;
-const int byteLen = 1588;
 
 TcpSocket::TcpSocket(const QString &ip, int port, const QString &device) : m_ip(ip), m_port(port), m_device(device)
 {
@@ -73,6 +72,11 @@ void TcpSocket::slot_disconnect()
 void TcpSocket::slot_readyRead()
 {
     QByteArray data = this->readAll();
+    if(!m_bPlcCnnected)
+    {
+        return;
+    }
+
     if(QString(data).contains(QString("\u0002sEA LMDscandata 1\u0003")))
     {
         return;
@@ -120,8 +124,10 @@ void TcpSocket::parse(const QByteArray &data, int start)
         m_sum = strTmp.toULong(&ok, 16);
 
         strTmp = dataList.at(start + 19 );
-        m_startX = strTmp.toUInt(&ok, 16);
-        qDebug()<<"hex start x "<<strTmp<<" start x"<<m_startX;
+       // m_startX = strTmp.toUInt(&ok, 16);
+        m_startXpos = m_xPos;
+        m_lastXpos = m_xPos - 1; //第一次接收到数据，将 m_lastXpos值设置为 m_xPos - 1,为了使第一次数据也能写入缓冲区
+        qDebug()<<"hex start x "<<strTmp<<" start x"<<m_startXpos;
 
         m_factors = 1;
         if(dataList.at(start + 23 ) == QString("40000000"))
@@ -151,47 +157,35 @@ void TcpSocket::parse(const QByteArray &data, int start)
             QStringList dtList = QString(bytes).split(" ");
             if(dtList.endsWith(QString("0\u0003")))
             {
-                QString strX = dtList.at(start + 19);
-                if(m_lastPos == strX)   //上一个编码器的值如果和当前编码器返回的值一样，则舍弃
-                {
-                    qDebug()<<"m_lastPos"<<m_lastPos<<"curPos"<<strX;
-                    return;
-                }
-
-                m_lastPos = strX;
-                //    qDebug()<<"current x"<<strX;
-                m_index = strX.toUInt(&ok, 16);
-
-                if(m_index - m_startX > PLOUGH_3D_SEGMENT_MAX)
-                {
-                    m_xIndex = -1;
-                }
-                m_index = (m_index - m_startX) % PLOUGH_3D_SEGMENT_MAX;
-                qDebug()<<"m_index"<<m_index<<" start x"<<m_startX;
-                if(m_index < 0)
+                if(m_lastXpos == m_xPos)
                 {
                     return;
                 }
 
-                double x = m_index * (M_PI * DIAMETER / 1024.0); //得到当前x轴的实际坐标
+                int xPos = (m_xPos - m_startXpos) % FREQ;   //计算从开始到当前 编码器转了多少分辨率
+
+                qDebug()<<"xPos"<<xPos<<" m_xPos ="<<m_xPos<<" m_startXpos ="<<m_startXpos;
+
+                double x = xPos * (M_PI * DIAMETER / FREQ); //得到当前x轴的实际坐标
                 int xIndex = (x / STEP);    //得到x轴实际坐标对应的分辨率点
-                //     qDebug()<<"xIndex"<<xIndex<<"m_xIndex"<<m_xIndex;
+                qDebug()<<"xIndex"<<xIndex<<"m_xIndex"<<m_xIndex;
 
                 if(xIndex == m_xIndex)
                 {
                     return;
                 }
-                int nSize = (xIndex - m_xIndex) % 100000;  //获取本次X轴对应的分辨率与上一个X轴对应的分辨率直接的差值
+                int nSize = (xIndex - m_xIndex) % PLOUGH_3D_SEGMENT_MAX;  //获取本次X轴对应的分辨率与上一个X轴对应的分辨率直接的差值
                 qDebug()<<"xIndex ="<<xIndex<<" | m_xIndex ="<<m_xIndex;
                 for(int k=m_xIndex+1; k<xIndex; k++)    //跳过的分辨率设置为disabled
                 {
                     Global::m_ringBuffer->Enable(k, false);
                 }
+                Global::m_ringBuffer->Enable(xIndex, true);
                 m_xIndex = xIndex;
 
                 double zMax = 0;
                 double yMax = 0;
-                qDebug()<<"| xIndex"<<xIndex<<" | m_index ="<<m_index<<" | m_sum"<<m_sum<<" | x"<<x<<" | nSize"<<nSize;
+                qDebug()<<"xIndex"<<xIndex<<" | m_index ="<<m_index<<" | m_sum"<<m_sum<<" | x"<<x<<" | nSize"<<nSize;
 
                 for(int j=0; j< m_sum; j++)
                 {
@@ -210,7 +204,7 @@ void TcpSocket::parse(const QByteArray &data, int start)
                 }
                 qDebug()<<"x"<<x<<"yMax"<<yMax<<"zMax"<<zMax<<"len"<<m_ptsNum / m_sum;
 
-                if(/*m_ptsNum - (200*m_sum) == 0 ||*/ m_ptsNum - (400*m_sum) == 0)
+                if(m_ptsNum % (400*m_sum) == 0)
                 {
                     QString m_fileName = QString("D:/work/repos/mesh/crane.mesh");
                     QFile file(m_fileName);
@@ -227,9 +221,8 @@ void TcpSocket::parse(const QByteArray &data, int start)
                     os<<"MeshVersionFormatted "<<2<<endl;
                     os<<"Dimension\n"<<3<<endl;
                     os<<"Vertices"<<endl;
-                    os<<m_ptsNum<<endl;
-
-                    qDebug()<<"read points";
+                    unsigned int count = Global::m_ringBuffer->getPointCount();
+                    os<<count<<endl;
 
                     for (int var = 0; var < PLOUGH_3D_SEGMENT_MAX; ++var) {
                         Points3D* p3d = Global::m_ringBuffer->readSegmentData(var);
@@ -399,7 +392,7 @@ void TcpSocket::parseLms511(const QByteArray &data)
         parse(data, headerIndex);
     }
 
-    qDebug()<<"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
+    qDebug()<<"*********************************************************************************************\n";
 }
 
 void TcpSocket::parseLrs3601(const QByteArray& data)
@@ -455,6 +448,10 @@ void TcpSocket::slot_numTimeout()
 void TcpSocket::slot_updateXpos(int pos)
 {
     m_xPos = pos;
+    if(!m_bPlcCnnected)
+    {
+        m_bPlcCnnected = true;
+    }
 }
 
 void TcpSocket::slot_saveOver()
