@@ -13,7 +13,7 @@ class TcpSocket : public QTcpSocket
 {
     Q_OBJECT
 public:
-    TcpSocket(const QString& ip, int port, const QString& device);
+    TcpSocket(const QString& ip, int port, const QString &devType, const QString& device);
 
     void connectHost(const QString& ip, int port);
 
@@ -42,6 +42,7 @@ private slots:
 private:
     QString m_ip;
     int m_port;
+    QString m_devType;
     QString m_device;
     QStringList m_dataList;
     QMap<float,QByteArray> m_dataMap;
@@ -73,6 +74,7 @@ private:
     void parseLms511(const QByteArray &data);
     void parse(const QByteArray &data, int start);
     void parseLrs3601(const QByteArray &data);
+    void parseLRS3601Data(const QByteArray &data, int start);
 };
 
 #endif // TCPSOCKET_H

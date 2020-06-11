@@ -13,7 +13,7 @@ class LRS36xx : public DeviceModel
 {
     Q_OBJECT
 public:
-    LRS36xx(const QString& ip, const int port, const QString& plcIp, const QString &device);
+    LRS36xx(const QString& ip, const int port, const QString& plcIp, const QString &devType, const QString &device);
     ~LRS36xx();
 
     virtual void start();

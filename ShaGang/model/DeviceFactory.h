@@ -6,19 +6,22 @@
 #include "LRS36xx.h"
 #include <QString>
 
+#include <QDebug>
+
 class DeviceFactory
 {
 public:
     DeviceFactory() {}
-    static DeviceModel* getDevice(const QString &device, const QString &ip, const int port, const QString& plcIp, const QString &com = "")
+    static DeviceModel* getDevice(const QString &devType, const QString &device, const QString &ip, const int port, const QString& plcIp)
     {
-        if(device.toUpper() == QString("LMS5XX"))
+        qDebug()<<"devType ="<<devType<<" device ="<<device;
+        if(devType.toUpper() == QString("LMS511"))
         {
-            return new Lms5XX(ip, port, plcIp, device);
+            return new Lms5XX(ip, port, plcIp, devType, device);
         }
-        else if(device.toUpper() == QString("LRS3601"))
+        else if(devType.toUpper() == QString("LRS3601"))
         {
-            return new LRS36xx(ip, port, plcIp, device);
+            return new LRS36xx(ip, port, plcIp, devType, device);
         }
         else
         {

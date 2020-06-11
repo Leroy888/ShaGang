@@ -16,7 +16,7 @@ class ControlFrame : public Frame
     Q_OBJECT
 
 public:
-    explicit ControlFrame(const QString &info, const QString &type, const QString &ip, const QString& plcIp, Frame *parent = nullptr);
+    explicit ControlFrame(const QString &type, const QString &dev, const QString &ip, const QString& plcIp, Frame *parent = nullptr);
     ~ControlFrame();
 
     virtual void setGrpVisible(bool value);

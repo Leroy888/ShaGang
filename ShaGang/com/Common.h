@@ -3,8 +3,9 @@
 
 #include <QString>
 
-#define PLOUGH_3D_SEGMENT_MAX 10000
+#define PLOUGH_3D_SEGMENT_MAX 20000
 #define PLOUGH_3D_SEGMENT_POINTS_MAX 361
+#define PLOUGH_3D_LRS3601_POINTS_MAX 720
 
 
 struct Point

@@ -1,9 +1,10 @@
 #include "PlcThread.h"
 #include <math.h>
+#include "com/Global.h"
 
 #include <QDebug>
 
-PlcThread::PlcThread(const QString &ip) : m_ip(ip)
+PlcThread::PlcThread(const QString &device, const QString &ip) : m_device(device), m_ip(ip)
 {
     m_isInit = true;
     m_isStop = false;
@@ -35,13 +36,14 @@ void PlcThread::run()
             double sum = num * pw;
             xPos += sum;
         }
-       // qDebug()<<"x pos ="<<xPos;
-        if(m_pos != xPos)
-        {
-            emit sig_updateXpos(xPos);
-        }
+        GblRingBuffer::getInstance()->setXpos(m_device, xPos);
 
-        msleep(10);
+//        if(m_pos != xPos)
+//        {
+//            emit sig_updateXpos(xPos);
+//        }
+
+        usleep(5);
     }
 }
 

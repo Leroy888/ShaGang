@@ -2,6 +2,7 @@
 #include "ui_MainForm.h"
 #include "clsSettings.h"
 #include "model/JsonReader.h"
+#include "com/Global.h"
 
 #include <QDebug>
 
@@ -17,7 +18,6 @@ MainForm::MainForm(QWidget *parent) :
     qDebug()<<"MainForm ID "<<QThread::currentThreadId();
 
     readIni();
- //   g_ringBuffer = new CRingBuffer<Points3D>(g_nResolution);
 
     initUi();
 
@@ -40,7 +40,6 @@ void MainForm::readIni()
     QString strNode = QString("System/");
     settings->readSetting(strNode + QString("funcPlug"), m_plugName);
     settings->readSetting(strNode + QString("strCom"), m_strCom);
-    settings->readSetting(strNode + QString("strDev"), m_strDev);
     settings->readSetting(strNode + QString("strPort"), m_strPort);
 
     strNode = QString("ToolBar/");
@@ -61,6 +60,11 @@ void MainForm::readIni()
     {
         QString strDev;
         settings->readSetting(strNode + QString("dev_%1").arg(QString::number(i + 1)), strDev);
+
+        QString devType;
+        settings->readSetting(strNode + QString("devType_%1").arg(QString::number(i + 1)), devType);
+        m_devTypeMap.insert(strDev, devType);
+
         QString strIp;
         settings->readSetting(strNode + QString("ip_%1").arg(QString::number(i + 1)), strIp);
         m_devIpMap.insert(strDev, strIp);
@@ -69,6 +73,10 @@ void MainForm::readIni()
         settings->readSetting(strNode + QString("plcIp_%1").arg(QString::number(i + 1)), plcIp);
         m_plcIpMap.insert(strDev, plcIp);
     }
+
+    QStringList devList = m_devIpMap.keys();
+    GblRingBuffer::setDevices(devList);
+    GblRingBuffer::getInstance();
 
     strNode = QString("Param/");
     settings->readSetting(strNode + QString("paramList"), m_paramList);
@@ -112,7 +120,9 @@ void MainForm::initUi()
         dw->addWidget(df);
         connect(wdt,&ClientForm::sig_updateData,df,&DataFrame::slot_updateData);
 
-        ControlFrame* cf = new ControlFrame(strDev, m_strDev, it.value(), m_plcIpMap.value(strDev));
+        qDebug()<<"strDev ="<<strDev<<" devType ="<<m_devType;
+        QString devType = m_devTypeMap.value(strDev);
+        ControlFrame* cf = new ControlFrame(devType, strDev, it.value(), m_plcIpMap.value(strDev));
         dw2->addWidget(cf);
         connect(cf,&ControlFrame::sig_update,wdt,&ClientForm::slot_update);
 

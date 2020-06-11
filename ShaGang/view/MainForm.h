@@ -45,13 +45,14 @@ private:
     QString m_info;
     QString m_plugName;
     QString m_strCom;
-    QString m_strDev;
+    QString m_devType;
 
     QStringList m_paramList;
     QMap<QString,DeviceModel*> m_devModelMap;
     QMap<QString,QString> m_devIpMap;
     QMap<QString,QString> m_plcIpMap;
     QMap<QString,ClientForm*> m_devFormMap;
+    QMap<QString,QString> m_devTypeMap;
 
  //   QMap<QString,DataForm*> m_dataForm;
     QString m_strPort;

@@ -3,9 +3,9 @@
 
 #include <QDebug>
 
-Lms5XX::Lms5XX(const QString &ip, const int port, const QString &plcIp, const QString &device)
+Lms5XX::Lms5XX(const QString &ip, const int port, const QString &plcIp, const QString &devType, const QString &device)
 {
-    m_socket = new TcpSocket(ip, port, device);
+    m_socket = new TcpSocket(ip, port, devType, device);
 
     connect(this,&Lms5XX::sig_startConnect,m_socket,&TcpSocket::slot_startConnect);
     connect(this,&Lms5XX::sig_sendCommand,m_socket,&TcpSocket::slot_sendCommand);
@@ -31,7 +31,7 @@ Lms5XX::Lms5XX(const QString &ip, const int port, const QString &plcIp, const QS
 
 
     // PLC网络通信
-    m_plcInstan = new PlcThread(plcIp);
+    m_plcInstan = new PlcThread(device, plcIp);
     connect(this,&Lms5XX::sig_connectToPlc,m_plcInstan,&PlcThread::slot_connect);
     connect(m_plcInstan,&PlcThread::sig_updateXpos,m_socket,&TcpSocket::slot_updateXpos);
 

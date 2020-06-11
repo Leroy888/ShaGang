@@ -9,7 +9,8 @@
 
 #include <QDebug>
 
-class CPoints3DRingBuffer
+class
+CPoints3DRingBuffer
 {
 public:
     CPoints3DRingBuffer(unsigned int size)

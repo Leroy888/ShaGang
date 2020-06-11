@@ -13,7 +13,7 @@ class Lms5XX : public DeviceModel
 {
     Q_OBJECT
 public:
-    Lms5XX(const QString &ip, const int port, const QString &plcIp, const QString& device);
+    Lms5XX(const QString &ip, const int port, const QString &plcIp, const QString &devType, const QString& device);
 
     virtual void sendCmd(const QByteArray &cmd) override;
     virtual void start() override;

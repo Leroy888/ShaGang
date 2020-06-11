@@ -35,6 +35,7 @@ SOURCES += \
     clsSettings.cpp \
     com/Command.cpp \
     com/Common.cpp \
+    com/Global.cpp \
     model/FileSaver.cpp \
     model/JsonReader.cpp \
     model/LRS36xx.cpp \

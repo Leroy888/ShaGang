@@ -2,7 +2,6 @@
 #define GLOBAL_H
 
 #include "model/CRingBuffer.h"
-#include <QDebug>
 #include "com/Common.h"
 
 
@@ -24,6 +23,29 @@ private:
 
 };
 
-CPoints3DRingBuffer* Global::m_ringBuffer = new CPoints3DRingBuffer (PLOUGH_3D_SEGMENT_MAX);
+
+
+class GblRingBuffer
+{
+public:
+    static void setDevices(const QStringList &devList);
+
+    static GblRingBuffer* getInstance();
+
+    QMap<QString,CPoints3DRingBuffer*> getRingBuffers();
+
+    CPoints3DRingBuffer *getRingBuffer(const QString &device);
+    int getXpos(const QString &device) const;
+    int setXpos(const QString &device, const int xPos);
+private:
+    GblRingBuffer();
+
+    static GblRingBuffer* m_glbRingBuffers;
+    QMap<QString,CPoints3DRingBuffer*> m_ringBuffers;
+    QMap<QString,int> m_xPosMap;
+    static QStringList m_devList;
+};
+
+
 
 #endif // GLOBAL_H
